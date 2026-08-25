@@ -1,0 +1,19 @@
+# Python virtual environment and caches
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+
+# Local credentials and private keys (Never commit these!)
+*.pem
+*.key
+.env
+.env.*
+!*.env.example
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
