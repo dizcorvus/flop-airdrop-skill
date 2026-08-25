@@ -25,7 +25,7 @@ Use these humanized, pre-formatted templates to publish contributions for Techno
 
 ### Post 4 (Repository Link)
 > Open-source repository:
-> https://github.com/YOUR_USERNAME/flop-airdrop-skill
+> https://github.com/dizcorvus/flop-airdrop-skill
 >
 > Works across Claude Code, Antigravity, Hermes, OpenClaw, OpenCode, and Cursor.
 

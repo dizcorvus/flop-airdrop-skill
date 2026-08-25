@@ -30,7 +30,7 @@ Ask your Antigravity agent:
 
 1. Add this skill to your Claude Code workspace:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/flop-airdrop-skill.git .claude/skills/flop-airdrop-skill
+   git clone https://github.com/dizcorvus/flop-airdrop-skill.git .claude/skills/flop-airdrop-skill
    ```
 2. Claude Code will automatically discover `SKILL.md`.
 
