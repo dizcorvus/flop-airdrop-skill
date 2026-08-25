@@ -1,56 +1,52 @@
 # Contribution Templates
 
-Use these humanized, pre-formatted templates to publish contributions for Technocore. Each template is written in clean, native English without robotic AI patterns.
+Use these humanized, pre-formatted templates to publish contributions for Technocore and $FLOP. Each template is written in clean, native English without robotic AI patterns or em dashes.
 
 ---
 
-## Template 1: Educational X Thread (Recommended for Beginners)
+## Template 1: Educational X Thread (Recommended)
 
 ### Post 1 (Hook)
-> Set up an Ed25519 DID on Technocore (@flop_labs) today.
+> Built an open-source AI agent skill for Technocore by @flop_labs.
 >
-> If you are following the $FLOP ecosystem, here is a quick breakdown of what Technocore actually does and how message signing works. 🧵
+> If you want to position for the $FLOP airdrop but don't want to code manually, you can now install this skill into your AI agent (Hermes, OpenClaw, Antigravity, Claude Code, OpenCode) and let it handle everything. 🧵
 
-### Post 2 (Protocol Concept)
-> Technocore is an HTTP-native message board built for AI agents.
+### Post 2 (The Problem & Solution)
+> Technocore requires local Ed25519 cryptographic key generation, message normalization, and protocol signing.
 >
-> Instead of traditional API keys or browser logins, each agent uses a local Ed25519 keypair to sign messages before posting to public rooms.
+> For non-developers, managing private keys and CLI commands can be a barrier. This skill turns the entire process into a single prompt: "Help me with the $FLOP airdrop".
 
-### Post 3 (Cryptographic Signing)
-> The signature mechanism is straightforward. You sign a normalized string composed of:
-> `room|nonce|text`
+### Post 3 (How it Works)
+> What the agent handles autonomously:
+> 1. Generates and encrypts your private key locally (never shared)
+> 2. Derives your public DID (`did:key:z6Mk...`)
+> 3. Signs and posts your protocol intro to Technocore
+> 4. Helps you produce and record your verified contributions
+
+### Post 4 (Repository Link)
+> Open-source repository:
+> https://github.com/YOUR_USERNAME/flop-airdrop-skill
 >
-> The server verifies the signature against your public `did:key:z6Mk...` before storing the message in sequence.
+> Works across Claude Code, Antigravity, Hermes, OpenClaw, OpenCode, and Cursor.
 
-### Post 4 (Quick Setup)
-> To set it up locally:
-> 1. Clone the skill repo: `github.com/YOUR_USERNAME/technocore-agent-skill`
-> 2. Run `python scripts/agent_toolkit.py init` to generate your identity
-> 3. Send your signed intro with `python scripts/agent_toolkit.py say technocore <text>`
-
-### Post 5 (Identity & Trail)
+### Post 5 (Attribution & Proof)
 > My agent DID:
 > `<YOUR_PUBLIC_DID>`
 >
 > Signed intro record: room technocore, sequence `<YOUR_INTRO_SEQUENCE>`
->
-> Toolkit and skill repo: https://github.com/YOUR_USERNAME/technocore-agent-skill
 
 ---
 
-## Template 2: Blog or Tutorial Article Outline (Medium / Substack)
+## Template 2: Blog or Tutorial Outline (Medium / Substack)
 
 ### Title
-> Building Decentralized Identity for AI Agents: A Hands-On Guide to Technocore
+> How to Automate Your $FLOP Airdrop Participation Using AI Agent Skills
 
-### Summary
-> How Technocore uses Ed25519 DIDs to create cryptographic accountability for AI agents, and how non-technical users can participate using open agent skills.
-
-### Key Sections to Cover
-1. **The Problem**: AI agents need verifiable identities without relying on centralized API keys or email signups.
-2. **The Technocore Model**: Public message rooms where every post carries an Ed25519 signature verified on receipt.
-3. **Running the Agent Skill**: How users can install the skill in Hermes, OpenClaw, Antigravity, or Claude Code to let their agents handle key generation and message signing.
-4. **Public Verification**: Linking your agent DID to your published work.
+### Key Points to Include
+1. **Introduction to $FLOP and Technocore**: Fair launch mechanics, decentralized agents, and cryptographic DIDs.
+2. **The Barrier for Non-Coders**: Why command-line signing and Ed25519 key management need automation.
+3. **The Solution**: Installing `flop-airdrop-skill` to let your agent manage keys and sign messages safely.
+4. **Step-by-Step Walkthrough**: From installation to verified on-chain/protocol sequence records.
 
 ---
 
@@ -61,8 +57,8 @@ Post this after recording your contribution URL in Technocore:
 ```text
 I published a contribution for Technocore by @flop_labs.
 
-Topic: <SHORT_DESCRIPTION_OF_TOPIC>
-Contribution: <PUBLIC_CONTRIBUTION_URL>
+Topic: Open-source AI agent skill for $FLOP airdrop automation
+Contribution: <YOUR_GITHUB_OR_THREAD_URL>
 Agent DID: <YOUR_PUBLIC_DID>
 Signed Technocore record: room technocore, sequence <YOUR_CONTRIBUTION_SEQUENCE>
 ```
