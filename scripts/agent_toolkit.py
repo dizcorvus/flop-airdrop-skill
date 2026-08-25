@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Technocore Agent Toolkit
-A self-contained helper for AI agents to manage Ed25519 DIDs and interact with Technocore.
+A robust, self-contained automation engine for AI agents to manage Ed25519 DIDs and interact with Technocore.
 """
 
 from __future__ import annotations
@@ -31,7 +31,9 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 DEFAULT_BASE_URL = "https://technocore.chat"
 DEFAULT_KEY_PATH = Path("identity.pem")
 DEFAULT_ENV_PATH = Path(".env")
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
+MAX_RETRIES = 3
+INITIAL_RETRY_DELAY = 2.0
 
 BASE58BTC_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 BASE58BTC_INDEX = {char: idx for idx, char in enumerate(BASE58BTC_ALPHABET)}
@@ -107,9 +109,18 @@ def load_env_config(env_path: Path = DEFAULT_ENV_PATH) -> dict[str, str]:
     return config
 
 
-def create_new_identity(key_path: Path = DEFAULT_KEY_PATH, env_path: Path = DEFAULT_ENV_PATH, passphrase: str | None = None) -> tuple[str, str]:
+def create_new_identity(
+    key_path: Path = DEFAULT_KEY_PATH,
+    env_path: Path = DEFAULT_ENV_PATH,
+    passphrase: str | None = None,
+) -> tuple[str, str]:
     if key_path.exists():
-        raise FileExistsError(f"Identity file already exists: {key_path}")
+        config = load_env_config(env_path)
+        existing_did = config.get("TECHNOCORE_DID")
+        if existing_did:
+            return existing_did, config.get("TECHNOCORE_PASSPHRASE", "")
+        raise FileExistsError(f"Identity file already exists at {key_path}")
+
     if not passphrase:
         charset = string.ascii_letters + string.digits + "!@#$%^&*"
         passphrase = "".join(secrets.choice(charset) for _ in range(32))
@@ -155,46 +166,68 @@ def post_message(
     key_path: Path = DEFAULT_KEY_PATH,
     env_path: Path = DEFAULT_ENV_PATH,
     base_url: str = DEFAULT_BASE_URL,
+    max_retries: int = MAX_RETRIES,
 ) -> dict[str, Any]:
     if not NAME_PATTERN.fullmatch(room):
         raise ValueError(f"Invalid room name: {room}")
+
     private_key = load_private_key(key_path, env_path)
     did = did_from_private_key(private_key)
     normalized = normalize_message(text)
-    nonce = str(time.time_ns())
-    payload = f"{room}|{nonce}|{normalized}".encode("utf-8")
-    sig = sign_bytes(private_key, payload)
 
-    body = json.dumps(
-        {
-            "did": did,
-            "sig": sig,
-            "nonce": nonce,
-            "text": normalized,
-        },
-        ensure_ascii=False,
-    ).encode("utf-8")
+    last_error: Exception | None = None
+    delay = INITIAL_RETRY_DELAY
 
-    req = Request(
-        f"{base_url}/r/{room}?format=json",
-        data=body,
-        method="POST",
-        headers={
-            "Content-Type": "application/json; charset=utf-8",
-            "Accept": "application/json",
-            "User-Agent": f"technocore-agent-skill/{APP_VERSION}",
-        },
-    )
+    for attempt in range(1, max_retries + 1):
+        nonce = str(time.time_ns())
+        payload = f"{room}|{nonce}|{normalized}".encode("utf-8")
+        sig = sign_bytes(private_key, payload)
 
-    try:
-        with urlopen(req, timeout=20.0) as res:
-            res_data = res.read().decode("utf-8")
-            return json.loads(res_data)
-    except HTTPError as e:
-        error_text = e.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Technocore HTTP {e.code}: {error_text}")
-    except URLError as e:
-        raise RuntimeError(f"Network error: {e.reason}")
+        body = json.dumps(
+            {
+                "did": did,
+                "sig": sig,
+                "nonce": nonce,
+                "text": normalized,
+            },
+            ensure_ascii=False,
+        ).encode("utf-8")
+
+        req = Request(
+            f"{base_url}/r/{room}?format=json",
+            data=body,
+            method="POST",
+            headers={
+                "Content-Type": "application/json; charset=utf-8",
+                "Accept": "application/json",
+                "User-Agent": f"flop-airdrop-skill/{APP_VERSION}",
+            },
+        )
+
+        try:
+            with urlopen(req, timeout=20.0) as res:
+                res_data = res.read().decode("utf-8")
+                return json.loads(res_data)
+        except HTTPError as e:
+            error_body = e.read().decode("utf-8", errors="replace")
+            # Retry on 5xx transient server errors
+            if e.code in (500, 502, 503, 504) and attempt < max_retries:
+                time.sleep(delay)
+                delay *= 2
+                last_error = RuntimeError(f"Technocore HTTP {e.code}: {error_body}")
+                continue
+            raise RuntimeError(f"Technocore HTTP {e.code}: {error_body}")
+        except (URLError, TimeoutError) as e:
+            if attempt < max_retries:
+                time.sleep(delay)
+                delay *= 2
+                last_error = e
+                continue
+            raise RuntimeError(f"Network error: {e}")
+
+    if last_error:
+        raise last_error
+    raise RuntimeError("Failed to post message after retries")
 
 
 def read_room_messages(room: str, limit: int = 20, base_url: str = DEFAULT_BASE_URL) -> dict[str, Any]:
@@ -205,7 +238,7 @@ def read_room_messages(room: str, limit: int = 20, base_url: str = DEFAULT_BASE_
         f"{base_url}/r/{room}?{query}",
         headers={
             "Accept": "application/json",
-            "User-Agent": f"technocore-agent-skill/{APP_VERSION}",
+            "User-Agent": f"flop-airdrop-skill/{APP_VERSION}",
         },
     )
     with urlopen(req, timeout=15.0) as res:
@@ -234,7 +267,6 @@ def main():
     try:
         if args.cmd == "init":
             did, _ = create_new_identity(passphrase=args.passphrase)
-            print(f"Created identity successfully.")
             print(f"DID: {did}")
         elif args.cmd == "did":
             key = load_private_key()
@@ -245,6 +277,7 @@ def main():
             print(f"Message published successfully.")
             print(f"Sequence: {posted.get('seq')}")
             print(f"DID: {posted.get('from')}")
+            print(f"Nonce: {posted.get('nonce')}")
             print(f"Timestamp: {posted.get('ts')}")
         elif args.cmd == "read":
             res = read_room_messages(args.room, limit=args.limit)
