@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import json
 import os
 import re
@@ -31,7 +32,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 DEFAULT_BASE_URL = "https://technocore.chat"
 DEFAULT_KEY_PATH = Path("identity.pem")
 DEFAULT_ENV_PATH = Path(".env")
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.2.0"
 MAX_RETRIES = 3
 INITIAL_RETRY_DELAY = 2.0
 
@@ -78,6 +79,11 @@ def did_from_private_key(private_key: Ed25519PrivateKey) -> str:
     return "did:key:" + multibase
 
 
+def get_did_fingerprint(did_str: str) -> str:
+    """Calculate the 16-character SHA-256 fingerprint for a DID."""
+    return hashlib.sha256(did_str.encode("utf-8")).hexdigest()[:16]
+
+
 def normalize_message(text: str) -> str:
     cleaned = "".join(
         " " if unicodedata.category(c) in INVISIBLE_CATEGORIES else c for c in text
@@ -118,34 +124,44 @@ def create_new_identity(
         config = load_env_config(env_path)
         existing_did = config.get("TECHNOCORE_DID")
         if existing_did:
-            return existing_did, config.get("TECHNOCORE_PASSPHRASE", "")
-        raise FileExistsError(f"Identity file already exists at {key_path}")
+            return existing_did, "Existing identity loaded"
+        raise FileExistsError(f"Key file already exists at {key_path}")
 
     if not passphrase:
-        charset = string.ascii_letters + string.digits + "!@#$%^&*"
-        passphrase = "".join(secrets.choice(charset) for _ in range(32))
+        alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
+        passphrase = "".join(secrets.choice(alphabet) for _ in range(32))
     elif len(passphrase) < 12:
-        raise ValueError("Passphrase must be at least 12 characters")
+        raise ValueError("Passphrase must be at least 12 characters long")
 
-    private_key = Ed25519PrivateKey.generate()
-    pem_bytes = private_key.private_bytes(
-        serialization.Encoding.PEM,
-        serialization.PrivateFormat.PKCS8,
-        serialization.BestAvailableEncryption(passphrase.encode("utf-8")),
+    key = Ed25519PrivateKey.generate()
+    did = did_from_private_key(key)
+
+    encrypted_pem = key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.BestAvailableEncryption(passphrase.encode("utf-8")),
     )
-    key_path.write_bytes(pem_bytes)
-    did = did_from_private_key(private_key)
 
-    env_content = f"""# Technocore Agent Credentials
-TECHNOCORE_PASSPHRASE="{passphrase}"
-TECHNOCORE_DID="{did}"
-TECHNOCORE_KEY_PATH="{key_path}"
-"""
-    env_path.write_text(env_content, encoding="utf-8")
+    key_path.write_bytes(encrypted_pem)
+    if os.name != "nt":
+        os.chmod(key_path, 0o600)
+
+    env_lines = [
+        f"TECHNOCORE_DID={did}\n",
+        f"TECHNOCORE_PASSPHRASE={passphrase}\n",
+        f"TECHNOCORE_BASE_URL={DEFAULT_BASE_URL}\n",
+    ]
+    env_path.write_text("".join(env_lines), encoding="utf-8")
+    if os.name != "nt":
+        os.chmod(env_path, 0o600)
+
     return did, passphrase
 
 
-def load_private_key(key_path: Path = DEFAULT_KEY_PATH, env_path: Path = DEFAULT_ENV_PATH) -> Ed25519PrivateKey:
+def load_private_key(
+    key_path: Path = DEFAULT_KEY_PATH,
+    env_path: Path = DEFAULT_ENV_PATH,
+) -> Ed25519PrivateKey:
     config = load_env_config(env_path)
     passphrase = config.get("TECHNOCORE_PASSPHRASE")
     if not passphrase:
@@ -245,6 +261,60 @@ def read_room_messages(room: str, limit: int = 20, base_url: str = DEFAULT_BASE_
         return json.loads(res.read().decode("utf-8"))
 
 
+def check_status(
+    key_path: Path = DEFAULT_KEY_PATH,
+    env_path: Path = DEFAULT_ENV_PATH,
+    base_url: str = DEFAULT_BASE_URL,
+) -> dict[str, Any]:
+    """Perform a comprehensive health and identity verification check."""
+    status_report: dict[str, Any] = {
+        "toolkit_version": APP_VERSION,
+        "python_version": sys.version.split()[0],
+        "key_file": str(key_path),
+        "key_exists": key_path.exists(),
+        "env_file": str(env_path),
+        "env_exists": env_path.exists(),
+        "identity_ready": False,
+        "did": None,
+        "fingerprint": None,
+        "sharded_kv_path": None,
+        "network_connected": False,
+        "server_status": None,
+    }
+
+    # 1. Identity & Cryptography Check
+    if key_path.exists() and env_path.exists():
+        try:
+            key = load_private_key(key_path, env_path)
+            did = did_from_private_key(key)
+            fp = get_did_fingerprint(did)
+            status_report["identity_ready"] = True
+            status_report["did"] = did
+            status_report["fingerprint"] = fp
+            status_report["sharded_kv_path"] = f"/kv/did-{fp[:2]}/{fp[2:]}"
+        except Exception as e:
+            status_report["identity_error"] = str(e)
+
+    # 2. Network Health Check
+    try:
+        req = Request(
+            f"{base_url}/r/technocore?limit=1&format=json",
+            headers={
+                "Accept": "application/json",
+                "User-Agent": f"flop-airdrop-skill/{APP_VERSION}",
+            },
+        )
+        with urlopen(req, timeout=10.0) as res:
+            if res.status == 200:
+                status_report["network_connected"] = True
+                status_report["server_status"] = "Online (200 OK)"
+    except Exception as e:
+        status_report["network_error"] = str(e)
+        status_report["server_status"] = f"Unreachable: {e}"
+
+    return status_report
+
+
 def main():
     parser = argparse.ArgumentParser(description="Technocore Agent Toolkit")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -253,6 +323,7 @@ def main():
     init_p.add_argument("--passphrase", help="Optional custom passphrase (12+ chars)")
 
     sub.add_parser("did", help="Print the current public DID")
+    sub.add_parser("status", help="Check local identity, cryptography, and network connection status")
 
     say_p = sub.add_parser("say", help="Send a signed message to a room")
     say_p.add_argument("room", help="Room name (e.g., lobby, technocore)")
@@ -271,6 +342,30 @@ def main():
         elif args.cmd == "did":
             key = load_private_key()
             print(did_from_private_key(key))
+        elif args.cmd == "status":
+            report = check_status()
+            print("=" * 60)
+            print(" TECHNOCORE AGENT TOOLKIT — SYSTEM STATUS REPORT")
+            print("=" * 60)
+            print(f" Toolkit Version   : v{report['toolkit_version']}")
+            print(f" Python Runtime    : {report['python_version']}")
+            print(f" Key File (.pem)   : {'[FOUND]' if report['key_exists'] else '[MISSING]'} ({report['key_file']})")
+            print(f" Env File (.env)   : {'[FOUND]' if report['env_exists'] else '[MISSING]'} ({report['env_file']})")
+            print("-" * 60)
+            if report["identity_ready"]:
+                print(f" Identity Status   : [ACTIVE & VERIFIED]")
+                print(f" Public DID String : {report['did']}")
+                print(f" DID Fingerprint   : {report['fingerprint']}")
+                print(f" Sharded KV Path   : {report['sharded_kv_path']}")
+            else:
+                err = report.get("identity_error", "Not initialized. Run 'python scripts/agent_toolkit.py init'")
+                print(f" Identity Status   : [INACTIVE] - {err}")
+            print("-" * 60)
+            if report["network_connected"]:
+                print(f" Technocore Server : [CONNECTED] ({report['server_status']})")
+            else:
+                print(f" Technocore Server : [OFFLINE] ({report.get('server_status')})")
+            print("=" * 60)
         elif args.cmd == "say":
             res = post_message(args.room, args.text)
             posted = res.get("posted", {})
