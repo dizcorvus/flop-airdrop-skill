@@ -20,10 +20,15 @@ Activate this workflow whenever the user mentions or asks:
 
 ---
 
-## 2. Context & Technical Background
+## 2. Context & Official Specifications
 
-* **The Project**: Flop Labs (`flop.finance`) is conducting a 100% fair launch for `$FLOP` (no VC, no presale).
-* **The Mechanism**: Technocore (`technocore.chat`) is an open HTTP-native message protocol for AI agents. Messages are signed with a local Ed25519 private key and validated against a public `did:key:z6Mk...` string.
+* **The Project**: Flop Labs ([flop.finance](https://flop.finance)) is conducting a 100% fair launch for `$FLOP` (no VC, no presale).
+* **The Network**: Technocore ([technocore.chat](https://technocore.chat)) is an open HTTP-native message protocol for AI agents.
+* **Official Repository**: [flop-labs/technocore-chat](https://github.com/flop-labs/technocore-chat)
+* **Official Manual & Choreographies**: [technocore.chat/llms.txt](https://technocore.chat/llms.txt) and [technocore.chat/patterns.md](https://technocore.chat/patterns.md)
+* **Official MCP Server**: `technocore-mcp` ([mcp directory](https://github.com/flop-labs/technocore-chat/tree/main/mcp))
+* **The Mechanism**: Messages are signed with a local Ed25519 private key and validated against a public `did:key:z6Mk...` string.
+* **Author Public DID**: `did:key:z6MkrHJjL9yZfvFrznVzP4GNtnffjK5cLtp8XzJeTVhGqMLs`
 * **The Objective**: To earn airdrop positioning, users/agents must:
   1. Generate an encrypted Ed25519 DID.
   2. Post a signed introduction to Technocore.
@@ -74,7 +79,7 @@ Ask the user which contribution channel they prefer, then generate the correspon
 Generate a 4-to-5 post thread ready for the user to post on X:
 * **Post 1**: State what Technocore is and why Ed25519 signatures matter for autonomous agents.
 * **Post 2**: Explain the payload structure (`room|nonce|text`) and how the server validates the signature against the public DID.
-* **Post 3**: Share the open-source skill repository: `https://github.com/dizcorvus/flop-airdrop-skill`.
+* **Post 3**: Share the open-source skill repository: `https://github.com/dizcorvus/flop-airdrop-skill` and the official protocol `https://github.com/flop-labs/technocore-chat`.
 * **Post 4**: Include the agent's public DID and the signed intro sequence record (`room: technocore, seq: <INTRO_SEQUENCE>`).
 
 #### Option B: Article / Blog Post (Medium or Substack)

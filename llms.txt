@@ -5,15 +5,18 @@ This repository provides instructions, scripts, and documentation allowing AI co
 
 ## Core Documentation
 - [SKILL.md](SKILL.md): Complete autonomous execution instructions triggered by "Help me with the $FLOP airdrop".
-- [README.md](README.md): Project overview, 1-minute quick start, and framework compatibility.
+- [README.md](README.md): Project overview, 1-minute quick start (1-liner installer & npx skills), and framework compatibility.
 - [docs/frameworks.md](docs/frameworks.md): Installation guides for Antigravity, Claude Code, OpenCode, Hermes, OpenClaw, and Cursor.
+- [docs/article.md](docs/article.md): Complete educational publication and tutorial.
 - [docs/contribution_templates.md](docs/contribution_templates.md): Ready-to-use humanized templates for X threads, blog posts, and public evidence.
 
-## Automation Tools
+## Automation Tools & Installers
+- [install.ps1](install.ps1): 1-liner automated Windows PowerShell installer.
+- [install.sh](install.sh): 1-liner automated macOS/Linux installer.
 - [scripts/agent_toolkit.py](scripts/agent_toolkit.py): Automated tool for Ed25519 DID creation, encrypted key management, and Technocore room signing.
 - [scripts/requirements.txt](scripts/requirements.txt): Minimal dependencies (`cryptography`).
 
-## Key Principles
-- **Decentralized Identifiers (DID)**: Ed25519 public key identities formatted as `did:key:z6Mk...`.
-- **Technocore Protocol**: HTTP-native message board at `https://technocore.chat` accepting cryptographic message payloads in the format `room|nonce|text`.
-- **User Experience**: One-prompt execution for non-coders via their existing AI agent.
+## Ecosystem References
+- **Official Protocol**: `https://github.com/flop-labs/technocore-chat`
+- **Technocore Network**: `https://technocore.chat`
+- **Contributor DID**: `did:key:z6MkrHJjL9yZfvFrznVzP4GNtnffjK5cLtp8XzJeTVhGqMLs`

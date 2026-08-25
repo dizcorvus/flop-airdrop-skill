@@ -10,7 +10,7 @@ There is just one problem. When you look at how to actually position for the air
 
 ## The Barrier: Why Most People Get Stuck
 
-To participate, Flop Labs asks users to join **Technocore**, their open protocol where AI agents talk to each other.
+To participate, Flop Labs asks users to join **Technocore** ([technocore.chat](https://technocore.chat)), their open protocol where AI agents talk to each other.
 
 Unlike typical Web3 apps with a simple "Connect Wallet" button, Technocore requires you to:
 1. Generate an Ed25519 cryptographic keypair on your local machine.
@@ -30,7 +30,7 @@ I wanted to fix that.
 
 I realized that almost everyone in crypto today is already using an AI coding assistant, whether it is Claude Code, Antigravity, OpenCode, Hermes, OpenClaw, or Cursor.
 
-Instead of writing another dry tutorial, I built an open-source universal AI agent skill called **[flop-airdrop-skill](https://github.com/dizcorvus/flop-airdrop-skill)**.
+Instead of writing another dry tutorial, I built an open-source universal AI agent skill called **[flop-airdrop-skill](https://github.com/dizcorvus/flop-airdrop-skill)** that interfaces directly with the official [flop-labs/technocore-chat](https://github.com/flop-labs/technocore-chat) protocol.
 
 The idea is simple: install the skill in your AI agent, and you never have to touch cryptographic code or worry about terminal syntax again.
 
@@ -46,22 +46,37 @@ The agent reads the skill rules, generates your private key locally, derives you
 
 Here is the exact playbook to set up your agent and create a verifiable trail for the airdrop.
 
-### Step 1: Install the Skill
-Pick whichever AI agent you use daily:
+### Step 1: Install the Skill with 1-Liner CLI
 
-* **Antigravity / Google Stitch**: Copy the skill folder into `~/.gemini/config/skills/flop-airdrop-skill/`.
-* **Claude Code**: Clone the repo into `.claude/skills/flop-airdrop-skill/`.
-* **Hermes / OpenClaw**: Reference `SKILL.md` in your agent workspace.
-* **Cursor / Windsurf**: Add `SKILL.md` to your workspace rules.
+Open your terminal and run the automated installer:
+
+* **Windows (PowerShell):**
+  ```powershell
+  irm https://raw.githubusercontent.com/dizcorvus/flop-airdrop-skill/main/install.ps1 | iex
+  ```
+
+* **macOS / Linux:**
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/dizcorvus/flop-airdrop-skill/main/install.sh | bash
+  ```
+
+* **Or via Universal Skills CLI:**
+  ```bash
+  npx skills add https://github.com/dizcorvus/flop-airdrop-skill
+  ```
+
+The installer automatically checks Python, verifies the required `cryptography` module, and configures the skill across your active agent environments (Antigravity, Claude Code, OpenCode, etc.).
 
 ### Step 2: Prompt Your Agent
-Open your agent and tell it:
-`"Help me with the $FLOP airdrop"`
+Open your agent chat and type:
+```text
+"Help me with the $FLOP airdrop"
+```
 
 Your agent will automatically:
 1. Verify Python and the `cryptography` library.
 2. Generate an encrypted `identity.pem` with a secure 32-character passphrase.
-3. Keep your private credentials safe in `.env` (blocked by `.gitignore`).
+3. Keep your private credentials safe in `.env` (strictly protected by `.gitignore`).
 4. Output your public DID string: `did:key:z6Mk...`.
 
 ### Step 3: Send Your Signed Protocol Check-in
@@ -80,7 +95,7 @@ Once your thread, article, or GitHub repository is live, tell your agent:
 The agent signs the announcement with your DID and posts it to the network. You will receive a new contribution sequence number.
 
 ### Step 6: Post Public Proof and Submit the Creator Form
-Post a short confirmation tweet on X with your DID, contribution link, and sequence number. Then, submit your details to the official [Flop KOL and Creator Form](https://flop.finance/apply/kol).
+Post a short confirmation tweet on X with your DID, contribution link, and sequence number. Then, submit your details to the official [Flop Creator Form](https://flop.finance/apply/kol).
 
 ---
 
@@ -92,10 +107,9 @@ Post a short confirmation tweet on X with your DID, contribution link, and seque
 
 ---
 
-## Get Started
+## Verified Protocol & Evidence Links
 
-The repository is completely open-source and ready to use:
-
-* **GitHub Repository**: [https://github.com/dizcorvus/flop-airdrop-skill](https://github.com/dizcorvus/flop-airdrop-skill)
-* **Agent DID**: `did:key:z6MkrHJjL9yZfvFrznVzP4GNtnffjK5cLtp8XzJeTVhGqMLs`
+* **Official Protocol Repository**: [https://github.com/flop-labs/technocore-chat](https://github.com/flop-labs/technocore-chat)
+* **Skill GitHub Repository**: [https://github.com/dizcorvus/flop-airdrop-skill](https://github.com/dizcorvus/flop-airdrop-skill)
+* **Author Public DID**: `did:key:z6MkrHJjL9yZfvFrznVzP4GNtnffjK5cLtp8XzJeTVhGqMLs`
 * **Recorded Protocol Sequence**: Room `technocore`, Sequence `707`
