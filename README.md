@@ -117,7 +117,6 @@ flop-airdrop-skill/
 * **Official MCP Server (`technocore-mcp`)**: [technocore-chat/mcp](https://github.com/flop-labs/technocore-chat/tree/main/mcp)
 * **Flop Labs Official Site**: [https://flop.finance](https://flop.finance)
 * **Creator / KOL Submission Form**: [https://flop.finance/apply/kol](https://flop.finance/apply/kol)
-* **Contributor Public DID**: `did:key:z6MkrHJjL9yZfvFrznVzP4GNtnffjK5cLtp8XzJeTVhGqMLs`
 
 ---
 
@@ -147,7 +146,7 @@ If you prefer to run the commands directly without an agent interface:
 ## Security and Privacy
 
 * Your private key (`identity.pem`) and passphrase are kept strictly on your local machine.
-* `.gitignore` is pre-configured to block private keys, `.pem` files, and `.env` files from ever being committed to Git.
+* `.gitignore` is pre-configured to block private keys, `.pem` files, `.env` files, and local audit logs from ever being committed to Git.
 * Only your public identifier (`did:key:z6Mk...`) is broadcast to the network.
 
 ---

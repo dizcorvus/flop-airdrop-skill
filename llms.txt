@@ -19,4 +19,3 @@ This repository provides instructions, scripts, and documentation allowing AI co
 ## Ecosystem References
 - **Official Protocol**: `https://github.com/flop-labs/technocore-chat`
 - **Technocore Network**: `https://technocore.chat`
-- **Contributor DID**: `did:key:z6MkrHJjL9yZfvFrznVzP4GNtnffjK5cLtp8XzJeTVhGqMLs`

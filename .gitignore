@@ -5,12 +5,16 @@ __pycache__/
 .ruff_cache/
 .pytest_cache/
 
-# Local credentials and private keys (Never commit these!)
+# Local credentials, private keys, and personal audit logs (Never commit these!)
 *.pem
 *.key
 .env
 .env.*
 !*.env.example
+CONTRIBUTIONS.md
+*.log
+notes/
+internal/
 
 # OS and Editor files
 .DS_Store
