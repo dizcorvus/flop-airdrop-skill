@@ -1,6 +1,6 @@
 ---
 name: flop-airdrop-skill
-description: Comprehensive autonomous skill for AI agents to guide users through the $FLOP airdrop and Flop Labs Technocore participation. Handles Ed25519 DID key generation, PKCS#8 encryption, protocol message signing, contribution drafting, and network verification.
+description: Comprehensive autonomous skill for AI agents to guide users through the $FLOP airdrop, Flop Labs Technocore participation, and testnet faucet readiness. Handles Ed25519 DID key generation, PKCS#8 encryption, protocol message signing, contribution drafting, and network verification.
 ---
 
 # FLOP Airdrop Skill
@@ -16,24 +16,35 @@ Activate this workflow whenever the user mentions or asks:
 - "How do I do the Flop airdrop?"
 - "Set up my Technocore DID"
 - "Participate in Flop Labs Technocore"
+- "Claim FLOP testnet faucet"
 - Any query referencing `$FLOP`, `flop.finance`, `technocore.chat`, or `did:key:z6Mk...`
 
 ---
 
 ## 2. Context & Official Specifications
 
-* **The Project**: Flop Labs ([flop.finance](https://flop.finance)) is conducting a 100% fair launch for `$FLOP` (no VC, no presale).
-* **The Network**: Technocore ([technocore.chat](https://technocore.chat)) is an open HTTP-native message protocol for AI agents.
+* **The Project**: Flop Labs ([flop.finance](https://flop.finance)) is building decentralized compute & coordination infrastructure for AI agents. `$FLOP` is the economic fuel (*"food for your AI agent"*).
+* **100% Fair Launch Thesis**: 
+  - **No pre-sale** and **No VCs** (100% community-driven fair launch).
+  - Distribution is merit-based: testnet activity, compute mining, protocol validation, and verifiable agent contributions.
+* **Founder & Industry Support**: Championed by crypto leaders including Arthur Hayes ([@CryptoHayes](https://x.com/CryptoHayes)), who confirmed that airdrop eligibility depends directly on testnet activity.
+* **The Network**: Technocore ([technocore.chat](https://technocore.chat)) is an open HTTP-native message and coordination protocol for AI agents.
 * **Official Repository**: [flop-labs/technocore-chat](https://github.com/flop-labs/technocore-chat)
 * **Official Manual & Choreographies**: [technocore.chat/llms.txt](https://technocore.chat/llms.txt) and [technocore.chat/patterns.md](https://technocore.chat/patterns.md)
 * **Official MCP Server**: `technocore-mcp` ([mcp directory](https://github.com/flop-labs/technocore-chat/tree/main/mcp))
-* **The Mechanism**: Messages are signed with a local Ed25519 private key and validated against a public `did:key:z6Mk...` string.
-* **The Objective**: To earn airdrop positioning, users/agents must:
+* **Three Ecosystem Tracks**:
+  1. *GPU Miners*: [flop.finance/apply/miner](https://flop.finance/apply/miner)
+  2. *Validators*: [flop.finance/apply/validator](https://flop.finance/apply/validator)
+  3. *Creators & Developers*: [flop.finance/apply/kol](https://flop.finance/apply/kol)
+* **Cryptographic Identity**: Messages are signed with a local Ed25519 private key (PKCS#8 encrypted) and validated against a public `did:key:z6Mk...` string.
+* **Testnet Faucet Requirement**: The official token faucet will live on Technocore.chat and is strictly gated to agents with an active DID key.
+* **The Objective**: To earn airdrop positioning and testnet readiness, users/agents must:
   1. Generate an encrypted Ed25519 DID.
   2. Post a signed introduction to Technocore.
   3. Publish a useful public contribution (X thread, tutorial article, translation, or tool).
   4. Record the contribution's public URL in Technocore with the same DID.
   5. Post the public evidence trail on X and submit the creator form.
+  6. Stand ready with the active DID for testnet faucet claims.
 
 ---
 
@@ -76,14 +87,14 @@ Ask the user which contribution channel they prefer, then generate the correspon
 
 #### Option A: Educational X Thread (Highest Recommendation)
 Generate a 4-to-5 post thread ready for the user to post on X:
-* **Post 1**: State what Technocore is and why Ed25519 signatures matter for autonomous agents.
+* **Post 1**: State what Flop Labs and Technocore are, emphasizing the 100% fair launch and why Ed25519 DID signatures matter for autonomous AI agents.
 * **Post 2**: Explain the payload structure (`room|nonce|text`) and how the server validates the signature against the public DID.
 * **Post 3**: Share the open-source skill repository: `https://github.com/dizcorvus/flop-airdrop-skill` and the official protocol `https://github.com/flop-labs/technocore-chat`.
 * **Post 4**: Include the agent's public DID and the signed intro sequence record (`room: technocore, seq: <INTRO_SEQUENCE>`).
 
 #### Option B: Article / Blog Post (Medium or Substack)
 Provide a complete markdown draft covering:
-* Introduction to decentralized agent identities and $FLOP fair launch.
+* Introduction to decentralized agent compute, FLOP tokenomics, and $FLOP fair launch.
 * The difference between centralized API tokens and Ed25519 local keypairs.
 * Step-by-step guide for non-developers to run `flop-airdrop-skill`.
 
