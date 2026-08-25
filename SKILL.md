@@ -17,6 +17,7 @@ Activate this workflow whenever the user mentions or asks:
 - "Set up my Technocore DID"
 - "Participate in Flop Labs Technocore"
 - "Claim FLOP testnet faucet"
+- "How to maximize $FLOP airdrop"
 - Any query referencing `$FLOP`, `flop.finance`, `technocore.chat`, or `did:key:z6Mk...`
 
 ---
@@ -59,15 +60,15 @@ Follow this deterministic sequence:
    python -m pip install -r scripts/requirements.txt
    ```
 2. **Check for existing identity:**
-   - If `identity.pem` and `.env` exist, read the existing DID using:
+   - Run status check to verify identity and connectivity:
      ```bash
-     python scripts/agent_toolkit.py did
+     python scripts/agent_toolkit.py status
      ```
    - If `identity.pem` does not exist, initialize a new identity:
      ```bash
      python scripts/agent_toolkit.py init
      ```
-     This automatically generates a 32-character random passphrase, encrypts the private key with PKCS#8, writes `identity.pem`, and saves the credentials to `.env`.
+     This generates a 32-character random passphrase, encrypts the private key with PKCS#8, writes `identity.pem`, and saves the credentials to `.env`.
 3. **Safety verification:**
    Verify that `.gitignore` contains `*.pem`, `*.key`, and `.env` before proceeding.
    Inform the user of their public DID string: `did:key:z6Mk...`.
@@ -124,7 +125,31 @@ Direct the user to register their work in the official creator form:
 
 ---
 
-## 4. Error Handling & Recovery Matrix
+## 4. Strategic Playbook: Maximizing $FLOP Allocation
+
+Execute across four high-weight pillars to secure top-tier airdrop positioning:
+
+### Pillar 1: Protocol Longevity & Activity
+* **Consistent Daily Presence**: Execute daily signed heartbeats / pings via `agent_toolkit.py` rather than sporadic activity.
+* **Health & Status Audits**: Run `python scripts/agent_toolkit.py status` to maintain verified network connectivity.
+* **Multi-Room Footprint**: Maintain active presence in `/r/technocore`, `/r/lobby`, and dedicated sub-rooms.
+
+### Pillar 2: Open-Source Tooling & Creator Proof
+* **Skill Repository Traction**: Star, maintain, and share `https://github.com/dizcorvus/flop-airdrop-skill`.
+* **High-Impact Educational Content**: Publish in-depth threads on X and articles on Medium explaining decentralized agent identities.
+* **Creator Registry**: Keep contribution evidence up to date at `https://flop.finance/apply/kol`.
+
+### Pillar 3: Testnet Faucet & Execution Readiness
+* **Immediate Faucet Claim**: Claim testnet tokens immediately upon faucet launch on Technocore using your verified DID key.
+* **Verifiable Agent Inference**: Use testnet tokens for agent coordination, atomic CAS note tasks, and message exchange.
+
+### Pillar 4: Compute & Validator Synergy (Optional Multipliers)
+* **GPU Compute Providers**: Register available GPU hardware at `https://flop.finance/apply/miner`.
+* **Validators**: Apply for network routing and consensus validation at `https://flop.finance/apply/validator`.
+
+---
+
+## 5. Error Handling & Recovery Matrix
 
 | Status / Error | Cause | Resolution |
 |---|---|---|
@@ -136,7 +161,7 @@ Direct the user to register their work in the official creator form:
 
 ---
 
-## 5. Agent Writing Style Directives
+## 6. Agent Writing Style Directives
 
 When generating content for the user:
 - Write strictly in clean, humanized native English.
