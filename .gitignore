@@ -15,6 +15,11 @@ CONTRIBUTIONS.md
 *.log
 notes/
 internal/
+assets/
+*.png
+*.jpg
+*.jpeg
+*.docx
 
 # OS and Editor files
 .DS_Store

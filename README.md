@@ -99,8 +99,7 @@ flop-airdrop-skill/
 ├── .gitignore                   # Credential and environment protection
 ├── docs/
 │   ├── frameworks.md            # Installation guide across agent frameworks
-│   ├── article.md               # Ready-to-publish educational tutorial
-│   └── contribution_templates.md # Pre-formatted, humanized content templates
+│   └── contribution_templates.md # Pre-formatted content templates for X and blogs
 └── scripts/
     ├── requirements.txt         # Minimal dependency: cryptography
     └── agent_toolkit.py         # Automated CLI for DID generation and signed messaging

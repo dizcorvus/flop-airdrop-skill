@@ -7,8 +7,7 @@ This repository provides instructions, scripts, and documentation allowing AI co
 - [SKILL.md](SKILL.md): Complete autonomous execution instructions triggered by "Help me with the $FLOP airdrop".
 - [README.md](README.md): Project overview, 1-minute quick start (1-liner installer & npx skills), and framework compatibility.
 - [docs/frameworks.md](docs/frameworks.md): Installation guides for Antigravity, Claude Code, OpenCode, Hermes, OpenClaw, and Cursor.
-- [docs/article.md](docs/article.md): Complete educational publication and tutorial.
-- [docs/contribution_templates.md](docs/contribution_templates.md): Ready-to-use humanized templates for X threads, blog posts, and public evidence.
+- [docs/contribution_templates.md](docs/contribution_templates.md): Ready-to-use templates for X threads, blog posts, and public evidence.
 
 ## Automation Tools & Installers
 - [install.ps1](install.ps1): 1-liner automated Windows PowerShell installer.
