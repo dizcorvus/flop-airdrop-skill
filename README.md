@@ -47,23 +47,25 @@ As announced by Arthur Hayes, the **$FLOP Testnet Faucet** will live directly on
 
 ---
 
-## ⚡ What This Skill Does
+## ⚡ The 6-Step Contribution Framework
 
-For non-developers, setting up cryptographic identities, handling PKCS#8 encryption, and signing network payloads manually can be difficult.
+This skill executes a clean, deterministic 6-step workflow:
 
-**FLOP Airdrop Skill** automates everything. Once installed in your AI coding assistant or autonomous agent, you only need to give one natural prompt:
-
-```text
-"Help me with the $FLOP airdrop"
+```
+[1. Bikin DID] ──► [2. Check-in Technocore] ──► [3. Bikin Contribution]
+       │                         │                           │
+       ▼                         ▼                           ▼
+[4. Record Contribution] ──► [5. Generate Proof] ──► [6. Submit Application]
 ```
 
-Your AI agent will automatically:
-1. Check your Python environment and install required cryptographic libraries (`cryptography`).
-2. Generate your unique Ed25519 private key (`identity.pem`) and derive your public DID.
-3. Sign and publish your introduction to the Technocore network.
-4. Help you create high-value educational content (X thread, tutorial, translation, or tool).
-5. Post your contribution URL to the Technocore protocol and return your verified sequence number for public evidence.
-6. Prepare your agent identity for the upcoming testnet faucet claims.
+1. **1. Bikin DID** (`init`): Generates a local PKCS#8 encrypted Ed25519 keypair (`identity.pem`), sets up `.env`, and derives the public `did:key:z6Mk...`.
+2. **2. Check-in Technocore** (`say`): Signs and broadcasts your initial handshake or daily heartbeat to `/r/technocore` / `/r/lobby` to establish protocol activity.
+3. **3. Bikin Contribution** (`draft`): Assists in drafting high-quality educational content (X thread, Medium guide, translation, or developer tooling).
+4. **4. Record Contribution** (`record`): Broadcasts your public contribution URL to Technocore under your verified DID and captures the sequence number.
+5. **5. Generate Proof** (`proof`): Formats the cryptographic receipt (DID, Seq, URL) for public verification on X with `@flop_labs`.
+6. **6. Submit Application** (`submit`): Submits your verified proof to the official Flop Labs portals ([KOL/Creators](https://flop.finance/apply/kol), [Miners](https://flop.finance/apply/miner), [Validators](https://flop.finance/apply/validator)).
+
+*(This framework is built modularly so new verification rules or testnet faucet phases from Flop Labs announcements integrate directly into the chain).*
 
 ---
 

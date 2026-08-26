@@ -47,23 +47,25 @@ Arthur Hayes mengumumkan bahwa **Faucet Token Testnet $FLOP akan live di Technoc
 
 ---
 
-## ⚡ Cara Kerja Skill Ini
+## ⚡ Framework Urutan Kontribusi (6 Langkah)
 
-Bagi non-programmer, membuat kunci kriptografi dan menandatangani pesan secara manual di terminal bisa sangat membingungkan.
+Skill ini dirancang dengan alur deterministik 6 langkah terstruktur:
 
-**FLOP Airdrop Skill** menyelesaikan masalah ini. Setelah dipasang di AI coding assistant Anda, Anda cukup memberikan satu perintah singkat:
-
-```text
-"Bantu aku airdrop $FLOP" atau "Help me with the $FLOP airdrop"
+```
+1. Bikin DID ──► 2. Check-in Technocore ──► 3. Bikin Contribution
+      │                     │                       │
+      ▼                     ▼                       ▼
+4. Record Contribution ──► 5. Generate Proof ──► 6. Submit Application
 ```
 
-AI Agent akan otomatis:
-1. Menyiapkan modul kriptografi Python (`cryptography`).
-2. Membuat private key lokal terenkripsi (`identity.pem`) dan menghasilkan public DID Anda.
-3. Menandatangani dan mengirim pesan perkenalan ke Technocore.
-4. Membantu Anda membuat draf konten edukatif (Thread X, tutorial Medium, dll).
-5. Merekam URL kontribusi publik ke Technocore dan mencatat audit trail.
-6. Menyiapkan identitas DID untuk klaim faucet testnet saat dibuka.
+1. **Bikin DID** (`init`): Membuat private key Ed25519 terenkripsi (`identity.pem`), `.env`, dan mengekstrak `did:key:z6Mk...`.
+2. **Check-in Technocore** (`say`): Mengirim perkenalan/ping bertanda tangan kriptografi ke protokol `/r/technocore` atau `/r/lobby` dan menyimpan nomor sequence.
+3. **Bikin Contribution** (`draft`): Membantu Anda menyusun kontribusi berkualitas (Thread edukasi X, artikel Medium, translasi docs, atau tools).
+4. **Record Contribution** (`record`): Menyiarkan URL kontribusi publik ke protokol Technocore menggunakan DID yang sama.
+5. **Generate Proof** (`proof`): Merangkum bukti kriptografis (DID, Sequence record, URL kontribusi) untuk diposting di X dengan tag `@flop_labs`.
+6. **Submit Application** (`submit`): Mendaftarkan hasil kontribusi dan bukti DID ke form resmi Flop Labs ([KOL/Creator](https://flop.finance/apply/kol), [Miners](https://flop.finance/apply/miner), [Validators](https://flop.finance/apply/validator)).
+
+*(Framework ini modular dan akan terus diperbarui secara dinamis seiring announcement dan tahapan baru dari Flop Labs).*
 
 ---
 

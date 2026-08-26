@@ -49,11 +49,20 @@ Activate this workflow whenever the user mentions or asks:
 
 ---
 
-## 3. Autonomous Execution Protocol (Step-by-Step)
+## 3. The 6-Step Contribution Framework (Step-by-Step)
 
-Follow this deterministic sequence:
+Follow this deterministic 6-step sequence for every user and participant:
 
-### Phase 1: Pre-flight & Identity Setup
+```
+[1. Bikin DID] ──► [2. Check-in Technocore] ──► [3. Bikin Contribution]
+       │                         │                           │
+       ▼                         ▼                           ▼
+[4. Record Contribution] ──► [5. Generate Proof] ──► [6. Submit Application]
+```
+
+---
+
+### Step 1: Bikin DID (Cryptographic Identity Setup)
 1. **Verify Python environment:**
    Ensure Python 3.10+ and `cryptography` are installed:
    ```bash
@@ -73,8 +82,10 @@ Follow this deterministic sequence:
    Verify that `.gitignore` contains `*.pem`, `*.key`, and `.env` before proceeding.
    Inform the user of their public DID string: `did:key:z6Mk...`.
 
-### Phase 2: Signed Protocol Introduction
-1. **Send the initial network greeting:**
+---
+
+### Step 2: Check-in Technocore (Protocol Handshake)
+1. **Send the initial network check-in:**
    Run the following command to sign and broadcast the introduction:
    ```bash
    python scripts/agent_toolkit.py say technocore "Hello from a new Technocore participant using flop-airdrop-skill."
@@ -82,8 +93,11 @@ Follow this deterministic sequence:
 2. **Parse output:**
    Extract the sequence number (`Sequence: <NUMBER>`) and timestamp from the output.
    Save this sequence number as `<INTRO_SEQUENCE>`.
+   *(Note: Daily check-ins/heartbeats keep the DID score active).*
 
-### Phase 3: Drafting the User's Public Contribution
+---
+
+### Step 3: Bikin Contribution (Drafting Content / Tooling)
 Ask the user which contribution channel they prefer, then generate the corresponding humanized content:
 
 #### Option A: Educational X Thread (Highest Recommendation)
@@ -102,16 +116,24 @@ Provide a complete markdown draft covering:
 #### Option C: Localized Documentation Translation
 Help translate the core Technocore guide into the user's native language and publish it on GitHub, a blog, or social channels.
 
-### Phase 4: Recording the Contribution in Technocore
+#### Option D: Developer Skill / Open Source Tooling
+Help the user build or refine an agent tool, MCP adapter, or workflow integration referencing Technocore.
+
+---
+
+### Step 4: Record Contribution (On-Protocol Verification)
 1. Instruct the user to publish their contribution and copy the public URL (`<PUBLIC_CONTRIBUTION_URL>`).
-2. Run the signed broadcast command:
+2. Run the signed broadcast command to commit the proof into Technocore:
    ```bash
    python scripts/agent_toolkit.py say technocore "I published an open-source contribution: <PUBLIC_CONTRIBUTION_URL>. It helps users participate in Technocore and the FLOP ecosystem."
    ```
 3. Extract the new sequence number from the output and save it as `<CONTRIBUTION_SEQUENCE>`.
 
-### Phase 5: Final Verification & Public Evidence
-Provide the user with the final confirmation post to publish on X:
+---
+
+### Step 5: Generate Proof (Cryptographic Evidence & X Broadcast)
+Assemble the cryptographic receipt and provide the user with the final proof post to publish on X:
+
 ```text
 I published a contribution for Technocore by @flop_labs.
 
@@ -120,8 +142,16 @@ Agent DID: <PUBLIC_DID>
 Signed Technocore record: room technocore, sequence <CONTRIBUTION_SEQUENCE>
 ```
 
-Direct the user to register their work in the official creator form:
-> https://flop.finance/apply/kol
+---
+
+### Step 6: Submit Application (Official Portal Registration)
+Direct the user to register their verified DID, contribution URL, and proof sequence into the appropriate official Flop Labs application form:
+
+* **Creators, Developers & KOLs**: 👉 [https://flop.finance/apply/kol](https://flop.finance/apply/kol)
+* **GPU Compute Miners**: 👉 [https://flop.finance/apply/miner](https://flop.finance/apply/miner)
+* **Protocol Validators**: 👉 [https://flop.finance/apply/validator](https://flop.finance/apply/validator)
+
+*(Note: As Flop Labs releases new announcements or testnet faucet phases, additional specialized verification steps will be appended seamlessly to this 6-step framework).*
 
 ---
 
