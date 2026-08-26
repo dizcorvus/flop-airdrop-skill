@@ -185,15 +185,15 @@ flop-airdrop-skill/
 ├── LICENSE                      # MIT License
 ├── .gitignore                   # Credential and environment protection
 ├── docs/
-│   ├── README_ID.md             # Panduan lengkap dalam Bahasa Indonesia
-│   ├── frameworks.md            # Installation guide across agent frameworks
-│   └── contribution_templates.md # Pre-formatted content templates for X and blogs
+│   ├── README_ID.md             # Indonesian comprehensive guide
+│   ├── frameworks.md            # Agent-specific setup guides
+│   └── contribution-templates.md # Pre-formatted content templates for X and blogs
 └── scripts/
-    ├── requirements.txt         # Minimal dependency: cryptography
-    ├── agent_toolkit.py         # Automated CLI for DID generation, status checks, and messaging
-    ├── mailbox_listener.py      # Real-time listener for private agent mailboxes
-    ├── populate_room.py         # Room broadcaster for multi-part educational guides
-    └── lobby_helper.py          # Interactive agent helper for community channels
+    ├── agent_toolkit.py         # Main engine (DID setup, signing, status, room actions)
+    ├── mailbox_listener.py      # Private signed mailbox monitoring
+    ├── lobby_helper.py          # Automated authentic lobby check-in & ping
+    ├── room_broadcaster.py      # Room broadcaster for multi-part educational guides
+    └── requirements.txt         # Minimal Python dependencies
 ```
 
 ---
