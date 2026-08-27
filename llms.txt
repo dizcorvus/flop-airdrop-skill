@@ -1,14 +1,18 @@
 # FLOP Airdrop Skill
-> Autonomous AI agent skill for $FLOP airdrop positioning, Flop Network Proof-of-Useful-Inference (PoUI) architecture, and Flop Labs Technocore participation.
+> Autonomous AI agent skill for $FLOP airdrop positioning, Flop Network Proof-of-Useful-Inference (PoUI) architecture, and Flop Labs Technocore participation with Dual-Engine (MCP-First) execution.
 
 This repository provides instructions, scripts, and documentation allowing AI coding assistants and autonomous agent frameworks to guide users through the $FLOP airdrop without requiring manual coding.
 
+## Dual-Engine Execution Architecture
+- **Engine 1 (MCP-First / Recommended)**: Connects to `technocore-mcp` via `claude mcp add technocore -- uvx technocore-mcp` or plugin marketplace `/plugin marketplace add flop-labs/technocore-chat`.
+- **Engine 2 (Standalone CLI / Fallback)**: Automated Python toolkit `scripts/agent_toolkit.py` for headless or script-only environments.
+
 ## Core Documentation
 - [SKILL.md](SKILL.md): Complete autonomous execution instructions triggered by "Help me with the $FLOP airdrop" or questions about Flop Network tokenomics/whitepaper teaser.
-- [README.md](README.md): Comprehensive ecosystem overview, 3.5B airdrop tokenomics, 4-layer PoUI verification, 1-minute quick start (1-liner installer & npx skills), and framework compatibility.
+- [README.md](README.md): Comprehensive ecosystem overview, 3.5B airdrop tokenomics, 4-layer PoUI verification, 1-minute quick start (MCP setup & 1-liner CLI installer), and framework compatibility.
 - [docs/README_ID.md](docs/README_ID.md): Indonesian comprehensive guide.
-- [docs/frameworks.md](docs/frameworks.md): Installation guides for Antigravity, Claude Code, OpenCode, Hermes, OpenClaw, and Cursor.
-- [docs/contribution-templates.md](docs/contribution-templates.md): Ready-to-use templates for Teaser breakdowns, X threads, blog posts, and public evidence.
+- [docs/frameworks.md](docs/frameworks.md): Installation & MCP configuration guides for Antigravity, Claude Code, Cursor, Windsurf, OpenCode, and Hermes.
+- [docs/contribution-templates.md](docs/contribution-templates.md): Ready-to-use templates for Teaser breakdowns, MCP threads, blog posts, and public evidence.
 
 ## Automation Tools & Installers
 - [install.ps1](install.ps1): 1-liner automated Windows PowerShell installer.
@@ -20,4 +24,5 @@ This repository provides instructions, scripts, and documentation allowing AI co
 - **Official Site**: `https://flop.finance`
 - **Whitepaper Teaser**: `https://flop.finance/teaser/`
 - **Official Protocol**: `https://github.com/flop-labs/technocore-chat`
+- **Official MCP Server**: `https://github.com/flop-labs/technocore-chat/tree/main/mcp`
 - **Technocore Network**: `https://technocore.chat`

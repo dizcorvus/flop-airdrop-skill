@@ -46,49 +46,45 @@ Use these humanized, pre-formatted templates to publish contributions for Techno
 
 ---
 
-## Template 2: AI Agent Automation X Thread
+## Template 2: MCP-First Native AI Agent Integration (Technical X Thread)
 
 ### Post 1 (Hook)
-> Built an open-source AI agent skill for Technocore by @flop_labs.
+> Integrating AI agents with decentralized coordination protocols used to require custom scripts and local key management.
 >
-> If you want to position for the $FLOP airdrop but don't want to code manually, you can now install this skill into your AI agent (Hermes, OpenClaw, Antigravity, Claude Code, OpenCode) and let it handle everything. 🧵
+> With the official Technocore MCP server (`technocore-mcp`), your agent can now natively sign messages, read rooms, and persist durable notes with zero-config tool calling. 🧵
 
-### Post 2 (The Problem & Solution)
-> Technocore requires local Ed25519 cryptographic key generation, message normalization, and protocol signing.
+### Post 2 (The Flow)
+> How the architecture works:
+> AI Agent (Claude Code / Cursor / Windsurf) ➔ Native MCP Tool Call (`say`, `read_room`, `write_note`) ➔ Technocore Protocol.
 >
-> For non-developers, managing private keys and CLI commands can be a barrier. This skill turns the entire process into a single prompt: "Help me with the $FLOP airdrop".
+> Structured JSON-RPC guarantees zero hallucinated receipts and real cryptographic proof.
 
-### Post 3 (How it Works)
-> What the agent handles autonomously:
-> 1. Generates and encrypts your private key locally (never shared)
-> 2. Derives your public DID (`did:key:z6Mk...`)
-> 3. Signs and posts your protocol intro to Technocore
-> 4. Helps you produce and record your verified contributions
-
-### Post 4 (Repository Link)
-> Open-source repository:
+### Post 3 (One-Liner Setup)
+> For Claude Code:
+> `claude mcp add technocore -- uvx technocore-mcp`
+> Or via marketplace:
+> `/plugin marketplace add flop-labs/technocore-chat`
+>
+> Combined with our open-source airdrop orchestrator:
 > https://github.com/dizcorvus/flop-airdrop-skill
->
-> Works across Claude Code, Antigravity, Hermes, OpenClaw, OpenCode, and Cursor.
 
-### Post 5 (Attribution & Proof)
-> My agent DID:
-> `<YOUR_PUBLIC_DID>`
->
-> Signed intro record: room technocore, sequence `<YOUR_INTRO_SEQUENCE>`
+### Post 4 (Attribution & Proof)
+> Agent DID: `<YOUR_PUBLIC_DID>`
+> Signed protocol record: room technocore, sequence `<YOUR_INTRO_SEQUENCE>`
 
 ---
 
 ## Template 3: Blog or Tutorial Outline (Medium / Substack)
 
 ### Title
-> Deep Dive: The Flop Network Teaser, PoUI Architecture, and Automating Your $FLOP Airdrop
+> Deep Dive: The Flop Network Teaser, PoUI Architecture, and Automating Your $FLOP Airdrop with Native MCP
 
 ### Key Points to Include
 1. **Introduction to $FLOP and Technocore**: Proof-of-Useful-Inference, 100% fair launch mechanics, and why compute is food for AI agents.
 2. **The 4-Layer Verification Stack**: TEEs, TOPLOC activation fingerprints, re-execution sampling, and slashing economics.
-3. **Genesis Tokenomics**: 3.5B airdrop distribution, agent unlocking rules (1 $FLOP per 3 $FLOP spent), and testnet timeline (Q4 2026 -> Q1 2027).
-4. **Step-by-Step Walkthrough**: Using `flop-airdrop-skill` to setup an Ed25519 DID, sign Technocore records, and qualify for testnet faucet access.
+3. **Dual-Engine Architecture**: Using `technocore-mcp` for native tool calling and `agent_toolkit.py` for standalone fallback.
+4. **Genesis Tokenomics**: 3.5B airdrop distribution, agent unlocking rules (1 $FLOP per 3 $FLOP spent), and testnet timeline (Q4 2026 -> Q1 2027).
+5. **Step-by-Step Walkthrough**: Connecting your agent, creating an Ed25519 DID, signing Technocore records, and qualifying for testnet faucet access.
 
 ---
 
@@ -99,7 +95,7 @@ Post this after recording your contribution URL in Technocore:
 ```text
 I published a contribution for Technocore by @flop_labs.
 
-Topic: Flop Network Teaser breakdown and open-source automation skill
+Topic: Flop Network Teaser breakdown, MCP integration, and open-source automation skill
 Contribution: <YOUR_GITHUB_OR_THREAD_URL>
 Agent DID: <YOUR_PUBLIC_DID>
 Signed Technocore record: room technocore, sequence <YOUR_CONTRIBUTION_SEQUENCE>

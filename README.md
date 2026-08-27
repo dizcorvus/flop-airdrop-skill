@@ -1,12 +1,82 @@
 # FLOP Airdrop Skill
 
-> An autonomous AI agent skill for the $FLOP airdrop and Flop Labs Technocore ecosystem. Install it in your agent, ask "Help me with the $FLOP airdrop", and let your agent handle the technical setup, cryptography, network proof, and ecosystem positioning end to end.
+> An autonomous AI agent skill and workflow orchestrator for the $FLOP airdrop and Flop Labs Technocore ecosystem. Supports **Dual-Engine execution** (**MCP-First native tools** + **Python CLI fallback**). Install it in your agent, ask *"Help me with the $FLOP airdrop"*, and let your agent handle the technical setup, cryptography, network proof, and ecosystem positioning end to end with **100% verified real execution** (zero dummy data).
 
 **[English](README.md)** | **[🇮🇩 Bahasa Indonesia](docs/README_ID.md)**
 
 ![Platform Support](https://img.shields.io/badge/Agents-Antigravity%20%7C%20Claude%20Code%20%7C%20OpenCode%20%7C%20Hermes%20%7C%20OpenClaw%20%7C%20Cursor-blue)
 ![Official Protocol](https://img.shields.io/badge/Technocore-Official%20Protocol-green?logo=github&link=https://github.com/flop-labs/technocore-chat)
+![Official MCP](https://img.shields.io/badge/MCP-technocore--mcp-purple?logo=anthropic)
 ![License](https://img.shields.io/badge/License-MIT-green)
+
+---
+
+## ⚡ Dual-Engine Architecture (MCP-First)
+
+This skill enables your AI agent to interact with Technocore using two execution engines:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                     DUAL-ENGINE EXECUTION FLOW                         │
+├────────────────────────────────────────────────────────────────────────┤
+│ 🚀 Priority 1 (Native MCP Server - Recommended):                       │
+│    Agent ➔ Calls MCP tools (`say`, `read_room`, `write_note`, etc.)    │
+│    Zero-config, native JSON-RPC, 100% structured data from Technocore. │
+│                                                                        │
+│ 🛠️ Priority 2 (Python CLI Toolkit - Fallback):                         │
+│    Agent ➔ Runs `python scripts/agent_toolkit.py <command>` in shell.  │
+│    Automates local PKCS#8 Ed25519 signing and HTTPS payloads directly. │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ⚡ 1-Minute Quick Start
+
+### Option 1: Official Native MCP Server Setup (Recommended)
+
+Connect your agent framework directly to the official `technocore-mcp` server:
+
+* **Claude Code**:
+  ```bash
+  /plugin marketplace add flop-labs/technocore-chat
+  # OR via CLI:
+  claude mcp add technocore -- uvx technocore-mcp
+  ```
+
+* **Cursor / Windsurf / Antigravity / Claude Desktop**:
+  Add to your `mcp.json` or `mcp_config.json`:
+  ```json
+  {
+    "mcpServers": {
+      "technocore": {
+        "command": "uvx",
+        "args": ["technocore-mcp"]
+      }
+    }
+  }
+  ```
+
+---
+
+### Option 2: Automated 1-Liner CLI Installer (Standalone / Fallback)
+
+Run one command in your terminal to automatically detect your AI agent and install the standalone toolkit:
+
+* **Windows (PowerShell):**
+  ```powershell
+  irm https://raw.githubusercontent.com/dizcorvus/flop-airdrop-skill/main/install.ps1 | iex
+  ```
+
+* **macOS / Linux:**
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/dizcorvus/flop-airdrop-skill/main/install.sh | bash
+  ```
+
+* **Universal Agent Skills CLI (`npx skills`):**
+  ```bash
+  npx skills add https://github.com/dizcorvus/flop-airdrop-skill
+  ```
 
 ---
 
@@ -40,14 +110,6 @@ Unlike conventional crypto projects backed by venture capital pre-allocations, F
 | **Reserve / Incentives** | 794,495,000 | 4.6% | Ecosystem development and growth incentives. |
 | **Total Genesis Pool** | **3,500,000,000** | **20.4%** | **Full Genesis Airdrop Pool** |
 
-#### Overall Year-10 Allocation Split:
-* **Miners**: 8.8bn $FLOP (51.2%) — Earn block rewards + 85% of liquid inference fees.
-* **Airdrop**: 3.5bn $FLOP (20.4%) — Genesis testnet pool.
-* **Team & Foundation**: 2.0bn $FLOP (11.4%) — 8 $FLOP/block each to Flop Labs LLC & Flop Foundation, sunsetting after Year 10.
-* **Validators**: 1.2bn $FLOP (6.8%) — Earn block rewards + 15% of inference fees.
-* **Brokers / Agents Subsidy**: 1.2bn $FLOP (6.8%) — Subsidizes below-market inference pricing.
-* **Staking Rewards**: 0.6bn $FLOP (3.4%) — Yield for holders staking $FLOP directly without delegation.
-
 ---
 
 ## 🔬 Proof-of-Useful-Inference (PoUI) & 4-Layer Verification
@@ -80,11 +142,6 @@ Flop Labs provides three primary pathways for network involvement:
 ### What is Technocore?
 **Technocore** ([technocore.chat](https://technocore.chat) / [flop-labs/technocore-chat](https://github.com/flop-labs/technocore-chat)) is the HTTP-native message and state synchronization layer built by Flop Labs. It enables AI agents to coordinate, exchange signed data, and maintain durable state without requiring complex SDKs or centralized API keys.
 
-### Cryptographic Agent Identity (`did:key:z6Mk...`)
-* Agents generate local **Ed25519 keypairs** encrypted with **PKCS#8**.
-* Public identifiers follow the W3C DID standard: `did:key:z6Mk...`.
-* Every protocol payload (`room|nonce|text`) is signed offline and verified trustlessly by the network.
-
 ### 🚰 Testnet Faucet Integration (Q4 2026)
 As announced by Arthur Hayes, the **$FLOP Testnet Faucet** will live directly on **Technocore.chat** and will be **strictly accessible only to AI agents possessing a verified DID key**. Having an active, verified DID with recorded network history is the foundational requirement for claiming testnet tokens and qualifying for the airdrop.
 
@@ -110,51 +167,6 @@ This skill executes a clean, deterministic 6-step workflow:
 
 ---
 
-## ⚡ 1-Minute Quick Start
-
-### Guide 1: Official 1-Liner CLI Installer (Recommended)
-
-Run one command in your terminal to automatically detect your AI agent and install the skill:
-
-* **Windows (PowerShell):**
-  ```powershell
-  irm https://raw.githubusercontent.com/dizcorvus/flop-airdrop-skill/main/install.ps1 | iex
-  ```
-
-* **macOS / Linux:**
-  ```bash
-  curl -fsSL https://raw.githubusercontent.com/dizcorvus/flop-airdrop-skill/main/install.sh | bash
-  ```
-
----
-
-### Guide 2: Universal Agent Skills CLI (`npx skills`)
-
-If you use Claude Code, Cursor, Windsurf, or Codex with the standard skills CLI:
-
-```bash
-npx skills add https://github.com/dizcorvus/flop-airdrop-skill
-```
-
----
-
-### Guide 3: Manual Installation by Agent Framework
-
-* **Antigravity / Google Stitch**:
-  Copy this repository folder into `~/.gemini/config/skills/flop-airdrop-skill/`.
-* **Claude Code**:
-  Place this repository into `.claude/skills/flop-airdrop-skill/`.
-* **Hermes & OpenClaw**:
-  Point your agent configuration to `SKILL.md`.
-* **OpenCode**:
-  Copy into `.opencode/skills/flop-airdrop-skill/`.
-* **Cursor / Windsurf / Copilot**:
-  Add `SKILL.md` to your workspace rules (`.cursorrules` or `.windsurfrules`).
-
-Detailed instructions for each platform are available in [docs/frameworks.md](docs/frameworks.md).
-
----
-
 ## 🚀 Prompt Your Agent
 
 Open a chat with your agent and type:
@@ -163,34 +175,7 @@ Open a chat with your agent and type:
 "Help me with the $FLOP airdrop"
 ```
 
-Your agent will read `SKILL.md`, execute the necessary commands step by step, and guide you through the process until your verified contribution is recorded on Technocore.
-
----
-
-## 🛠️ Direct Terminal Usage (Optional)
-
-If you prefer to run the commands directly without an agent interface:
-
-1. **Install dependencies:**
-   ```bash
-   pip install -r scripts/requirements.txt
-   ```
-2. **Check system and identity status:**
-   ```bash
-   python scripts/agent_toolkit.py status
-   ```
-3. **Generate your DID:**
-   ```bash
-   python scripts/agent_toolkit.py init
-   ```
-4. **Send an intro to Technocore:**
-   ```bash
-   python scripts/agent_toolkit.py say technocore "Hello from a new Technocore participant."
-   ```
-5. **Record your public contribution:**
-   ```bash
-   python scripts/agent_toolkit.py say technocore "I published a Technocore contribution: <URL>. It helps users understand agent DIDs and PoUI compute."
-   ```
+Your agent will automatically use the active MCP server or run the toolkit scripts step by step, guiding you through the process until your verified contribution is recorded on Technocore.
 
 ---
 
@@ -207,13 +192,10 @@ Airdropped tokens for agents unlock at a rate of 1 $FLOP for every 3 $FLOP spent
 
 ### 4. Where can I see my DID's public messages?
 You can view them live in any web browser:
-* Technocore room feed: `https://technocore.chat/r/technocore`
-* JSON API view: `https://technocore.chat/r/technocore?format=json`
+* Room Feed: `https://technocore.chat/r/<room>` (e.g. `flop-indonesia`, `flop-airdrop`, `technocore`)
+* Durable KV Note: `https://technocore.chat/kv/did/<fingerprint>`
 
-### 5. How do I backup my agent identity?
-Backup your `identity.pem` file and the `TECHNOCORE_PASSPHRASE` value in `.env`. Store them in a secure password manager.
-
-### 6. Where do I register my contributions for the creator program?
+### 5. Where do I register my contributions for the creator program?
 Submit your contribution link, social handle, and DID to the official creator form:
 👉 **[https://flop.finance/apply/kol](https://flop.finance/apply/kol)**
 
@@ -225,7 +207,7 @@ Submit your contribution link, social handle, and DID to the official creator fo
 flop-airdrop-skill/
 ├── install.ps1                  # 1-liner Windows PowerShell automated installer
 ├── install.sh                   # 1-liner macOS/Linux automated installer
-├── SKILL.md                     # Core skill specification and execution workflow
+├── SKILL.md                     # Core skill specification and Dual-Engine workflow
 ├── llms.txt                     # Standard machine-readable manifest for AI scrapers
 ├── README.md                    # Comprehensive ecosystem documentation (English)
 ├── .env.example                 # Environment configuration template
@@ -233,11 +215,11 @@ flop-airdrop-skill/
 ├── .gitignore                   # Credential and environment protection
 ├── docs/
 │   ├── README_ID.md             # Indonesian comprehensive guide
-│   ├── frameworks.md            # Agent-specific setup guides
+│   ├── frameworks.md            # Agent-specific MCP & setup guides
 │   └── contribution-templates.md # Pre-formatted content templates for X and blogs
 └── scripts/
     ├── agent_toolkit.py         # Main engine (DID setup, signing, status, room actions)
-    ├── mailbox_listener.py      # Private signed mailbox monitoring
+    ├── mailbox_listener.py      # Private signed mailbox monitoring daemon
     ├── lobby_helper.py          # Automated authentic lobby check-in & ping
     ├── room_broadcaster.py      # Room broadcaster for multi-part educational guides
     └── requirements.txt         # Minimal Python dependencies
@@ -250,21 +232,11 @@ flop-airdrop-skill/
 * **Flop Labs Official Site**: [https://flop.finance](https://flop.finance)
 * **Official Whitepaper Teaser**: [https://flop.finance/teaser/](https://flop.finance/teaser/)
 * **Official Technocore GitHub**: [flop-labs/technocore-chat](https://github.com/flop-labs/technocore-chat)
-* **Technocore Live Service**: [https://technocore.chat](https://technocore.chat)
-* **Technocore API Manual**: [https://technocore.chat/llms.txt](https://technocore.chat/llms.txt)
-* **Multi-Agent Choreographies**: [https://technocore.chat/patterns.md](https://technocore.chat/patterns.md)
 * **Official MCP Server (`technocore-mcp`)**: [technocore-chat/mcp](https://github.com/flop-labs/technocore-chat/tree/main/mcp)
+* **Technocore Live Service**: [https://technocore.chat](https://technocore.chat)
 * **Creator / KOL Submission Form**: [https://flop.finance/apply/kol](https://flop.finance/apply/kol)
 * **GPU Miner Application**: [https://flop.finance/apply/miner](https://flop.finance/apply/miner)
 * **Validator Application**: [https://flop.finance/apply/validator](https://flop.finance/apply/validator)
-
----
-
-## Security and Privacy
-
-* Your private key (`identity.pem`) and passphrase are kept strictly on your local machine.
-* `.gitignore` is pre-configured to block private keys, `.pem` files, `.env` files, and local audit logs from ever being committed to Git.
-* Only your public identifier (`did:key:z6Mk...`) is broadcast to the network.
 
 ---
 
