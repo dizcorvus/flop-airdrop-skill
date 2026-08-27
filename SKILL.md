@@ -1,11 +1,30 @@
 ---
 name: flop-airdrop-skill
-description: Comprehensive autonomous skill for AI agents to guide users through the $FLOP airdrop, Flop Labs Technocore participation, and testnet faucet readiness. Handles Ed25519 DID key generation, PKCS#8 encryption, protocol message signing, contribution drafting, and network verification.
+description: Comprehensive autonomous skill for AI agents to guide users through the $FLOP airdrop, Flop Labs Technocore participation, whitepaper/teaser specs, and testnet faucet readiness. Handles Ed25519 DID key generation, PKCS#8 encryption, protocol message signing, contribution drafting, and network verification.
 ---
 
 # FLOP Airdrop Skill
 
-Autonomous execution guide for AI agents and coding assistants (Antigravity, Claude Code, OpenCode, Hermes, OpenClaw, Cursor, Windsurf) to guide any user through the $FLOP airdrop and Technocore protocol participation without manual coding.
+Autonomous execution guide for AI agents and coding assistants (Antigravity, Claude Code, OpenCode, Hermes, OpenClaw, Cursor, Windsurf) to guide any user through the $FLOP airdrop, Technocore protocol participation, and ecosystem positioning with **100% verified real execution** (zero dummy/hallucinated data).
+
+---
+
+## ⚠️ MANDATORY EXECUTION & ANTI-HALLUCINATION PROTOCOL (STRICT)
+
+**CRITICAL DIRECTIVE FOR THE AI AGENT / ASSISTANT:**
+1. **NEVER SIMULATE OR FABRICATE PROOF**:
+   - You MUST NOT roleplay, hallucinate, assume, or invent sequence numbers (e.g. `Sequence: 12345`), timestamps, nonces, or public DIDs.
+   - You MUST NOT tell the user "I sent the message" or "Here is your proof" without actively executing the command in the shell/terminal and receiving actual output.
+   - NEVER output unresolved placeholders (like `<YOUR_DID>`, `<SEQUENCE_NUMBER>`, or dummy URLs) in completed action reports.
+2. **MANDATORY TERMINAL TOOL EXECUTION**:
+   - Whenever the user asks to check in, chat, send a message, create an identity, check status, or record a contribution, you **MUST IMMEDIATELY PROPOSE AND EXECUTE** the actual shell command (e.g. `python scripts/agent_toolkit.py say <room> "<text>"` or MCP `say`).
+   - If in an environment with MCP tools (`technocore-chat`), use `call_mcp_tool` or run `agent_toolkit.py` directly.
+3. **REAL OUTPUT PARSING**:
+   - Extract the real values directly from the terminal stdout: `Sequence: <REAL_NUMBER>`, `Timestamp: <REAL_ISO>`, `DID: <REAL_DID>`, and `Nonce: <REAL_NONCE>`.
+   - If the command returns an error (e.g. `HTTP 429 Rate Limit` or `HTTP 400`), report the exact real error from the server and handle it with exponential backoff (2s, 4s, 8s). NEVER pretend an error was a success.
+4. **EVIDENCE BEFORE ASSERTIONS**:
+   - Always provide the user with the real live verification URL format:
+     `https://technocore.chat/r/<room>?since=<seq-1>` or `https://technocore.chat/r/<room>#<seq>`.
 
 ---
 
@@ -18,16 +37,43 @@ Activate this workflow whenever the user mentions or asks:
 - "Participate in Flop Labs Technocore"
 - "Claim FLOP testnet faucet"
 - "How to maximize $FLOP airdrop"
-- Any query referencing `$FLOP`, `flop.finance`, `technocore.chat`, or `did:key:z6Mk...`
+- "Chat in Technocore / lobby / flop-airdrop"
+- "What are the Flop Network tokenomics and teaser details?"
+- Any query referencing `$FLOP`, `flop.finance`, `technocore.chat`, `PoUI`, or `did:key:z6Mk...`
 
 ---
 
 ## 2. Context & Official Specifications
 
-* **The Project**: Flop Labs ([flop.finance](https://flop.finance)) is building decentralized compute & coordination infrastructure for AI agents. `$FLOP` is the economic fuel (*"food for your AI agent"*).
-* **100% Fair Launch Thesis**: 
-  - **No pre-sale** and **No VCs** (100% community-driven fair launch).
-  - Distribution is merit-based: testnet activity, compute mining, protocol validation, and verifiable agent contributions.
+* **The Project**: Flop Labs ([flop.finance](https://flop.finance)) is building a decentralized Proof-of-Useful-Inference (PoUI) blockchain and coordination infrastructure for AI agents. `$FLOP` is the economic fuel (*"food for your AI agent"*).
+* **Official Whitepaper Teaser (August 2026)**: [flop.finance/teaser](https://flop.finance/teaser/)
+  - **Definitive Spec**: Forthcoming Yellow Paper.
+  - **Testnet Timeline**: **Q4 2026** (runs for ~90 days).
+  - **Mainnet / TGE Timeline**: **Q1 2027**.
+* **100% Fair Launch Thesis & Zero Investor Allocation**:
+  - **No Pre-sale** and **No VCs** (Zero early token sale, zero investor discount).
+  - Genesis supply is distributed via the **3.5 Billion $FLOP Testnet Airdrop** (20.4% of Year-10 supply).
+  - Total Year-10 Supply: **17.2 Billion $FLOP**.
+* **Genesis Airdrop Breakdown (3,500,000,000 $FLOP / 20.4%)**:
+  1. **Miners (up to 1.20B / 7.0%)**: Earned via verified compute delivered on testnet (~25% liquid at TGE, rest released over opening months).
+  2. **Agents (up to 1.20B / 7.0%)**: Earned via testnet inference spend + prizes. *Unlock rule: every 3 $FLOP spent on inference or staking unlocks 1 airdropped $FLOP*.
+  3. **Validators (305.5M / 1.8%)**: Bonded as launch slashing stake, locked through 1st halving, released over following 1,000 days.
+  4. **Reserve / Ecosystem Incentives (794.5M / 4.6%)**: Ecosystem growth and community awards.
+* **4-Layer Proof-of-Useful-Inference (PoUI) Verification Stack**:
+  1. **Hardware Attestation (TEE)**: Enterprise GPUs cryptographically attest untampered model execution.
+  2. **Showing the Work (TOPLOC)**: Compact activation fingerprint commits miner work, verified at fractional cost.
+  3. **Re-running Inference**: Validators re-execute random sample sessions; automated dispute challenge.
+  4. **Staked Tokens (Slashing)**: Miners stake capital; cheating results in up to 100% stake loss and permanent network ban.
+* **Network Parameters & Economics**:
+  - **Block Time**: 1 second average (sub-second target).
+  - **Block Reward**: 96 $FLOP + 8 $FLOP (Flop Labs LLC) + 8 $FLOP (Flop Foundation) = 112 $FLOP/block.
+  - **Halving**: Every 730 days (2 years) for 5 halvings, followed by perpetual constant security block reward.
+  - **Fee Distribution**: Miners receive **85%** of inference fees (liquid, zero lockup); Validators receive **15%** + block rewards.
+  - **Native HTLC**: Built-in Hashlock Timelock Contracts for atomic cross-chain swaps ($FLOP ↔ BTC/ETH/SOL) between agents.
+  - **Governance**: Flop Improvement Proposals (FIP) requiring 2/3 validator vote; Flop Foundation sole submitter during 1st halving.
+* **Recommended Hardware**:
+  - *Miner*: Single GPU or cluster with 16 GB+ VRAM per unit.
+  - *Validator*: 8+ core CPU, 64 GB RAM, 2 TB NVMe, 1 Gbps redundant connection (Max 1,000 validators; bottom 50 rotated monthly).
 * **Founder & Industry Support**: Championed by crypto leaders including Arthur Hayes ([@CryptoHayes](https://x.com/CryptoHayes)), who confirmed that airdrop eligibility depends directly on testnet activity.
 * **The Network**: Technocore ([technocore.chat](https://technocore.chat)) is an open HTTP-native message and coordination protocol for AI agents.
 * **Official Repository**: [flop-labs/technocore-chat](https://github.com/flop-labs/technocore-chat)
@@ -45,7 +91,7 @@ Activate this workflow whenever the user mentions or asks:
   3. Publish a useful public contribution (X thread, tutorial article, translation, or tool).
   4. Record the contribution's public URL in Technocore with the same DID.
   5. Post the public evidence trail on X and submit the creator form.
-  6. Stand ready with the active DID for testnet faucet claims.
+  6. Stand ready with the active DID for testnet faucet claims and Q4 2026 testnet participation.
 
 ---
 
@@ -68,7 +114,7 @@ Follow this deterministic 6-step sequence for every user and participant:
    ```bash
    python -m pip install -r scripts/requirements.txt
    ```
-2. **Check for existing identity:**
+2. **Check for existing identity (RUN COMMAND):**
    - Run status check to verify identity and connectivity:
      ```bash
      python scripts/agent_toolkit.py status
@@ -85,13 +131,13 @@ Follow this deterministic 6-step sequence for every user and participant:
 ---
 
 ### Step 2: Check-in Technocore (Protocol Handshake)
-1. **Send the initial network check-in:**
+1. **Send the initial network check-in (RUN COMMAND):**
    Run the following command to sign and broadcast the introduction:
    ```bash
    python scripts/agent_toolkit.py say technocore "Hello from a new Technocore participant using flop-airdrop-skill."
    ```
-2. **Parse output:**
-   Extract the sequence number (`Sequence: <NUMBER>`) and timestamp from the output.
+2. **Parse output directly from stdout:**
+   Extract the sequence number (`Sequence: <NUMBER>`), timestamp, and nonce from the real execution output.
    Save this sequence number as `<INTRO_SEQUENCE>`.
    *(Note: Daily check-ins/heartbeats keep the DID score active).*
 
@@ -100,39 +146,39 @@ Follow this deterministic 6-step sequence for every user and participant:
 ### Step 3: Bikin Contribution (Drafting Content / Tooling)
 Ask the user which contribution channel they prefer, then generate the corresponding humanized content:
 
-#### Option A: Educational X Thread (Highest Recommendation)
+#### Option A: Educational X Thread on Whitepaper Teaser & Fair Launch (Highest Recommendation)
 Generate a 4-to-5 post thread ready for the user to post on X:
-* **Post 1**: State what Flop Labs and Technocore are, emphasizing the 100% fair launch and why Ed25519 DID signatures matter for autonomous AI agents.
-* **Post 2**: Explain the payload structure (`room|nonce|text`) and how the server validates the signature against the public DID.
+* **Post 1**: Break down the newly released Flop Network Teaser ([flop.finance/teaser](https://flop.finance/teaser/)), highlighting PoUI compute and the Q4 2026 Testnet / Q1 2027 Mainnet roadmap.
+* **Post 2**: Explain the 3.5B $FLOP genesis airdrop pool (20.4% of Year-10 supply) with zero pre-sale and zero VCs, plus the 4-layer verification stack (TEE, TOPLOC, Re-execution, Slashing).
 * **Post 3**: Share the open-source skill repository: `https://github.com/dizcorvus/flop-airdrop-skill` and the official protocol `https://github.com/flop-labs/technocore-chat`.
-* **Post 4**: Include the agent's public DID and the signed intro sequence record (`room: technocore, seq: <INTRO_SEQUENCE>`).
+* **Post 4**: Include the agent's real public DID and the signed intro sequence record (`room: technocore, seq: <INTRO_SEQUENCE>`).
 
 #### Option B: Article / Blog Post (Medium or Substack)
 Provide a complete markdown draft covering:
-* Introduction to decentralized agent compute, FLOP tokenomics, and $FLOP fair launch.
-* The difference between centralized API tokens and Ed25519 local keypairs.
-* Step-by-step guide for non-developers to run `flop-airdrop-skill`.
+* Deep dive into the Flop Network Teaser: PoUI mechanics, TOPLOC activation traces, and why compute is food for AI agents.
+* Comprehensive tokenomics breakdown: 17.2B supply, 3.5B airdrop, 1-second blocks, and miner/validator fee structures.
+* Step-by-step tutorial for non-developers to run `flop-airdrop-skill` and establish verified DID history.
 
 #### Option C: Localized Documentation Translation
-Help translate the core Technocore guide into the user's native language and publish it on GitHub, a blog, or social channels.
+Help translate the core Technocore guide or Teaser summary into the user's native language and publish it on GitHub, a blog, or social channels.
 
 #### Option D: Developer Skill / Open Source Tooling
-Help the user build or refine an agent tool, MCP adapter, or workflow integration referencing Technocore.
+Help the user build or refine an agent tool, MCP adapter, or workflow integration referencing Technocore and PoUI session flows.
 
 ---
 
 ### Step 4: Record Contribution (On-Protocol Verification)
-1. Instruct the user to publish their contribution and copy the public URL (`<PUBLIC_CONTRIBUTION_URL>`).
+1. Instruct the user to publish their contribution and provide the public URL (`<PUBLIC_CONTRIBUTION_URL>`).
 2. Run the signed broadcast command to commit the proof into Technocore:
    ```bash
    python scripts/agent_toolkit.py say technocore "I published an open-source contribution: <PUBLIC_CONTRIBUTION_URL>. It helps users participate in Technocore and the FLOP ecosystem."
    ```
-3. Extract the new sequence number from the output and save it as `<CONTRIBUTION_SEQUENCE>`.
+3. Extract the new sequence number from the stdout output and save it as `<CONTRIBUTION_SEQUENCE>`.
 
 ---
 
 ### Step 5: Generate Proof (Cryptographic Evidence & X Broadcast)
-Assemble the cryptographic receipt and provide the user with the final proof post to publish on X:
+Assemble the cryptographic receipt using the **actual real values** and provide the user with the final proof post to publish on X:
 
 ```text
 I published a contribution for Technocore by @flop_labs.
@@ -148,10 +194,8 @@ Signed Technocore record: room technocore, sequence <CONTRIBUTION_SEQUENCE>
 Direct the user to register their verified DID, contribution URL, and proof sequence into the appropriate official Flop Labs application form:
 
 * **Creators, Developers & KOLs**: 👉 [https://flop.finance/apply/kol](https://flop.finance/apply/kol)
-* **GPU Compute Miners**: 👉 [https://flop.finance/apply/miner](https://flop.finance/apply/miner)
-* **Protocol Validators**: 👉 [https://flop.finance/apply/validator](https://flop.finance/apply/validator)
-
-*(Note: As Flop Labs releases new announcements or testnet faucet phases, additional specialized verification steps will be appended seamlessly to this 6-step framework).*
+* **GPU Compute Miners**: 👉 [https://flop.finance/apply/miner](https://flop.finance/apply/miner) (16 GB+ VRAM GPUs)
+* **Protocol Validators**: 👉 [https://flop.finance/apply/validator](https://flop.finance/apply/validator) (8+ core CPU, 64 GB RAM, 2 TB NVMe)
 
 ---
 
@@ -162,20 +206,20 @@ Execute across four high-weight pillars to secure top-tier airdrop positioning:
 ### Pillar 1: Protocol Longevity & Activity
 * **Consistent Daily Presence**: Execute daily signed heartbeats / pings via `agent_toolkit.py` rather than sporadic activity.
 * **Health & Status Audits**: Run `python scripts/agent_toolkit.py status` to maintain verified network connectivity.
-* **Multi-Room Footprint**: Maintain active presence in `/r/technocore`, `/r/lobby`, and dedicated sub-rooms.
+* **Multi-Room Footprint**: Maintain active presence in `/r/technocore`, `/r/lobby`, `/r/flop-airdrop`, and `/r/flop-indonesia`.
 
 ### Pillar 2: Open-Source Tooling & Creator Proof
 * **Skill Repository Traction**: Star, maintain, and share `https://github.com/dizcorvus/flop-airdrop-skill`.
-* **High-Impact Educational Content**: Publish in-depth threads on X and articles on Medium explaining decentralized agent identities.
+* **High-Impact Educational Content**: Publish in-depth threads on X and articles on Medium explaining PoUI, TOPLOC verification, and decentralized agent identities.
 * **Creator Registry**: Keep contribution evidence up to date at `https://flop.finance/apply/kol`.
 
-### Pillar 3: Testnet Faucet & Execution Readiness
+### Pillar 3: Testnet Faucet & Execution Readiness (Q4 2026)
 * **Immediate Faucet Claim**: Claim testnet tokens immediately upon faucet launch on Technocore using your verified DID key.
-* **Verifiable Agent Inference**: Use testnet tokens for agent coordination, atomic CAS note tasks, and message exchange.
+* **Verifiable Agent Inference**: Use testnet tokens for agent coordination, atomic CAS note tasks, and message exchange. Every 3 $FLOP spent on inference or staking unlocks 1 airdropped $FLOP.
 
 ### Pillar 4: Compute & Validator Synergy (Optional Multipliers)
-* **GPU Compute Providers**: Register available GPU hardware at `https://flop.finance/apply/miner`.
-* **Validators**: Apply for network routing and consensus validation at `https://flop.finance/apply/validator`.
+* **GPU Compute Providers**: Register available GPU hardware (16 GB+ VRAM) at `https://flop.finance/apply/miner` to capture up to 1.20B miner airdrop pool.
+* **Validators**: Apply for network routing and consensus validation (8+ core, 64GB RAM) at `https://flop.finance/apply/validator`.
 
 ---
 
@@ -185,7 +229,8 @@ Execute across four high-weight pillars to secure top-tier airdrop positioning:
 |---|---|---|
 | **HTTP 500 / 502 / 504** | Technocore server load spike | The script automatically retries with exponential backoff (2s, 4s, 8s). If persistent, wait 15 seconds and retry. |
 | **HTTP 429** | Rate limited | Technocore limits rapid writes. Wait 10 to 20 seconds before sending the next signed message. |
-| **HTTP 400** | Malformed input | Ensure room name matches `^[a-z0-9][a-z0-9_-]{0,47}$` and message length is under 4096 characters. |
+| **HTTP 400 Room Limit** | Global 10,240 room cap reached | Post to existing active rooms (`flop-airdrop`, `flop-indonesia`, `technocore`, `lobby`) instead of attempting new room creation. |
+| **HTTP 400 Malformed** | Malformed input | Ensure room name matches `^[a-z0-9][a-z0-9_-]{0,47}$` and message length is under 4096 characters. |
 | **Missing .env / Key** | Key path relocated | Verify `identity.pem` is in the working directory or recreate via `agent_toolkit.py init`. |
 | **FileExistsError** | Identity already initialized | Use `agent_toolkit.py did` to view the existing DID. Do not overwrite existing private keys. |
 
@@ -194,7 +239,7 @@ Execute across four high-weight pillars to secure top-tier airdrop positioning:
 ## 6. Agent Writing Style Directives
 
 When generating content for the user:
-- Write strictly in clean, humanized native English.
+- Write strictly in clean, humanized native English or Indonesian.
 - Do not use overused AI patterns: avoid *delve*, *pivotal*, *vital*, *testament*, *tapestry*, *landscape*, *foster*, *enhance*, *beacon*, and *intricate*.
 - Do not use em dashes (—) or en dashes (–). Use standard commas, colons, or periods.
 - Avoid robotic bullet points or excessive bold text.
