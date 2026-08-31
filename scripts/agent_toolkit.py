@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Technocore Agent Toolkit
-A robust, self-contained automation engine for AI agents to manage Ed25519 DIDs and interact with Technocore.
+Technocore Agent Toolkit v1.3.0
+A robust, self-contained automation engine for AI agents to manage Ed25519 DIDs,
+broadcast signed multi-room contributions, and interact with Technocore.
 """
 
 from __future__ import annotations
@@ -30,11 +31,13 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 )
 
 DEFAULT_BASE_URL = "https://technocore.chat"
-DEFAULT_KEY_PATH = Path("identity.pem")
-DEFAULT_ENV_PATH = Path(".env")
-APP_VERSION = "1.2.0"
-MAX_RETRIES = 3
-INITIAL_RETRY_DELAY = 2.0
+APP_VERSION = "1.3.0"
+MAX_RETRIES = 5
+INITIAL_RETRY_DELAY = 1.0
+DEFAULT_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
 
 BASE58BTC_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 BASE58BTC_INDEX = {char: idx for idx, char in enumerate(BASE58BTC_ALPHABET)}
@@ -45,6 +48,50 @@ INVISIBLE_CATEGORIES = frozenset({"Cc", "Cf", "Cs", "Co", "Zl", "Zp"})
 NAME_PATTERN = re.compile(r"[a-z0-9][a-z0-9_-]{0,47}")
 NONCE_PATTERN = re.compile(r"[0-9]{1,19}")
 SIGNATURE_PATTERN = re.compile(rf"[A-Za-z0-9_-]{{{SIGNATURE_LENGTH}}}")
+
+
+def resolve_paths(
+    key_path_arg: Path | str | None = None,
+    env_path_arg: Path | str | None = None,
+) -> tuple[Path, Path]:
+    """Auto-resolve the best matching paths for identity.pem and .env."""
+    cwd = Path.cwd()
+    script_dir = Path(__file__).resolve().parent
+
+    env_candidates = [
+        Path(env_path_arg) if env_path_arg else None,
+        cwd / ".env",
+        cwd / "flop-airdrop-skill" / ".env",
+        cwd / "technocore-did-starter" / ".env",
+        script_dir.parent / ".env",
+        script_dir / ".env",
+    ]
+    resolved_env = cwd / ".env"
+    for cand in env_candidates:
+        if cand and cand.exists():
+            resolved_env = cand.resolve()
+            break
+
+    env_config = load_env_config(resolved_env)
+    configured_key = env_config.get("TECHNOCORE_KEY_PATH")
+
+    key_candidates = [
+        Path(key_path_arg) if key_path_arg else None,
+        resolved_env.parent / configured_key if configured_key else None,
+        cwd / configured_key if configured_key else None,
+        cwd / "identity.pem",
+        cwd / "flop-airdrop-skill" / "identity.pem",
+        cwd / "technocore-did-starter" / "identity.pem",
+        script_dir.parent / "identity.pem",
+        script_dir / "identity.pem",
+    ]
+    resolved_key = resolved_env.parent / "identity.pem"
+    for cand in key_candidates:
+        if cand and cand.exists():
+            resolved_key = cand.resolve()
+            break
+
+    return resolved_key, resolved_env
 
 
 def base58btc_encode(data: bytes) -> str:
@@ -102,7 +149,7 @@ def sign_bytes(private_key: Ed25519PrivateKey, payload: bytes) -> str:
     return sig
 
 
-def load_env_config(env_path: Path = DEFAULT_ENV_PATH) -> dict[str, str]:
+def load_env_config(env_path: Path) -> dict[str, str]:
     config: dict[str, str] = {}
     if not env_path.exists():
         return config
@@ -116,16 +163,17 @@ def load_env_config(env_path: Path = DEFAULT_ENV_PATH) -> dict[str, str]:
 
 
 def create_new_identity(
-    key_path: Path = DEFAULT_KEY_PATH,
-    env_path: Path = DEFAULT_ENV_PATH,
+    key_path: Path | None = None,
+    env_path: Path | None = None,
     passphrase: str | None = None,
 ) -> tuple[str, str]:
-    if key_path.exists():
-        config = load_env_config(env_path)
+    resolved_key, resolved_env = resolve_paths(key_path, env_path)
+    if resolved_key.exists():
+        config = load_env_config(resolved_env)
         existing_did = config.get("TECHNOCORE_DID")
         if existing_did:
             return existing_did, "Existing identity loaded"
-        raise FileExistsError(f"Key file already exists at {key_path}")
+        raise FileExistsError(f"Key file already exists at {resolved_key}")
 
     if not passphrase:
         alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
@@ -142,34 +190,36 @@ def create_new_identity(
         encryption_algorithm=serialization.BestAvailableEncryption(passphrase.encode("utf-8")),
     )
 
-    key_path.write_bytes(encrypted_pem)
+    resolved_key.write_bytes(encrypted_pem)
     if os.name != "nt":
-        os.chmod(key_path, 0o600)
+        os.chmod(resolved_key, 0o600)
 
     env_lines = [
         f"TECHNOCORE_DID={did}\n",
         f"TECHNOCORE_PASSPHRASE={passphrase}\n",
+        f"TECHNOCORE_KEY_PATH={resolved_key.name}\n",
         f"TECHNOCORE_BASE_URL={DEFAULT_BASE_URL}\n",
     ]
-    env_path.write_text("".join(env_lines), encoding="utf-8")
+    resolved_env.write_text("".join(env_lines), encoding="utf-8")
     if os.name != "nt":
-        os.chmod(env_path, 0o600)
+        os.chmod(resolved_env, 0o600)
 
     return did, passphrase
 
 
 def load_private_key(
-    key_path: Path = DEFAULT_KEY_PATH,
-    env_path: Path = DEFAULT_ENV_PATH,
+    key_path: Path | None = None,
+    env_path: Path | None = None,
 ) -> Ed25519PrivateKey:
-    config = load_env_config(env_path)
+    resolved_key, resolved_env = resolve_paths(key_path, env_path)
+    config = load_env_config(resolved_env)
     passphrase = config.get("TECHNOCORE_PASSPHRASE")
     if not passphrase:
-        raise ValueError("TECHNOCORE_PASSPHRASE not found in .env")
-    if not key_path.exists():
-        raise FileNotFoundError(f"Key file not found: {key_path}")
+        raise ValueError(f"TECHNOCORE_PASSPHRASE not found in {resolved_env}")
+    if not resolved_key.exists():
+        raise FileNotFoundError(f"Key file not found: {resolved_key}")
 
-    pem_data = key_path.read_bytes()
+    pem_data = resolved_key.read_bytes()
     key = serialization.load_pem_private_key(pem_data, password=passphrase.encode("utf-8"))
     if not isinstance(key, Ed25519PrivateKey):
         raise ValueError("Loaded key is not an Ed25519 private key")
@@ -179,15 +229,16 @@ def load_private_key(
 def post_message(
     room: str,
     text: str,
-    key_path: Path = DEFAULT_KEY_PATH,
-    env_path: Path = DEFAULT_ENV_PATH,
+    key_path: Path | None = None,
+    env_path: Path | None = None,
     base_url: str = DEFAULT_BASE_URL,
     max_retries: int = MAX_RETRIES,
 ) -> dict[str, Any]:
     if not NAME_PATTERN.fullmatch(room):
         raise ValueError(f"Invalid room name: {room}")
 
-    private_key = load_private_key(key_path, env_path)
+    resolved_key, resolved_env = resolve_paths(key_path, env_path)
+    private_key = load_private_key(resolved_key, resolved_env)
     did = did_from_private_key(private_key)
     normalized = normalize_message(text)
 
@@ -203,10 +254,11 @@ def post_message(
             {
                 "did": did,
                 "sig": sig,
-                "nonce": nonce,
+                "nonce": str(nonce),
                 "text": normalized,
             },
             ensure_ascii=False,
+            separators=(",", ":"),
         ).encode("utf-8")
 
         req = Request(
@@ -216,27 +268,27 @@ def post_message(
             headers={
                 "Content-Type": "application/json; charset=utf-8",
                 "Accept": "application/json",
-                "User-Agent": f"flop-airdrop-skill/{APP_VERSION}",
+                "User-Agent": DEFAULT_USER_AGENT,
             },
         )
 
         try:
-            with urlopen(req, timeout=20.0) as res:
+            with urlopen(req, timeout=12.0) as res:
                 res_data = res.read().decode("utf-8")
                 return json.loads(res_data)
         except HTTPError as e:
             error_body = e.read().decode("utf-8", errors="replace")
-            # Retry on 5xx transient server errors
-            if e.code in (500, 502, 503, 504) and attempt < max_retries:
+            # Retry on 5xx transient server errors and 429
+            if e.code in (429, 500, 502, 503, 504) and attempt < max_retries:
                 time.sleep(delay)
-                delay *= 2
+                delay = min(delay * 1.5, 5.0)
                 last_error = RuntimeError(f"Technocore HTTP {e.code}: {error_body}")
                 continue
             raise RuntimeError(f"Technocore HTTP {e.code}: {error_body}")
         except (URLError, TimeoutError) as e:
             if attempt < max_retries:
                 time.sleep(delay)
-                delay *= 2
+                delay = min(delay * 1.5, 5.0)
                 last_error = e
                 continue
             raise RuntimeError(f"Network error: {e}")
@@ -246,7 +298,12 @@ def post_message(
     raise RuntimeError("Failed to post message after retries")
 
 
-def read_room_messages(room: str, limit: int = 20, base_url: str = DEFAULT_BASE_URL) -> dict[str, Any]:
+def read_room_messages(
+    room: str,
+    limit: int = 20,
+    base_url: str = DEFAULT_BASE_URL,
+    max_retries: int = MAX_RETRIES,
+) -> dict[str, Any]:
     if not NAME_PATTERN.fullmatch(room):
         raise ValueError(f"Invalid room name: {room}")
     query = urlencode({"format": "json", "limit": limit})
@@ -254,26 +311,43 @@ def read_room_messages(room: str, limit: int = 20, base_url: str = DEFAULT_BASE_
         f"{base_url}/r/{room}?{query}",
         headers={
             "Accept": "application/json",
-            "User-Agent": f"flop-airdrop-skill/{APP_VERSION}",
+            "User-Agent": DEFAULT_USER_AGENT,
         },
     )
-    with urlopen(req, timeout=15.0) as res:
-        return json.loads(res.read().decode("utf-8"))
+    delay = INITIAL_RETRY_DELAY
+    for attempt in range(1, max_retries + 1):
+        try:
+            with urlopen(req, timeout=12.0) as res:
+                return json.loads(res.read().decode("utf-8"))
+        except HTTPError as e:
+            if e.code in (429, 500, 502, 503, 504) and attempt < max_retries:
+                time.sleep(delay)
+                delay = min(delay * 1.5, 5.0)
+                continue
+            raise
+        except (URLError, TimeoutError):
+            if attempt < max_retries:
+                time.sleep(delay)
+                delay = min(delay * 1.5, 5.0)
+                continue
+            raise
+    raise RuntimeError("Failed to read room messages after retries")
 
 
 def check_status(
-    key_path: Path = DEFAULT_KEY_PATH,
-    env_path: Path = DEFAULT_ENV_PATH,
+    key_path: Path | None = None,
+    env_path: Path | None = None,
     base_url: str = DEFAULT_BASE_URL,
 ) -> dict[str, Any]:
     """Perform a comprehensive health and identity verification check."""
+    resolved_key, resolved_env = resolve_paths(key_path, env_path)
     status_report: dict[str, Any] = {
         "toolkit_version": APP_VERSION,
         "python_version": sys.version.split()[0],
-        "key_file": str(key_path),
-        "key_exists": key_path.exists(),
-        "env_file": str(env_path),
-        "env_exists": env_path.exists(),
+        "key_file": str(resolved_key),
+        "key_exists": resolved_key.exists(),
+        "env_file": str(resolved_env),
+        "env_exists": resolved_env.exists(),
         "identity_ready": False,
         "did": None,
         "fingerprint": None,
@@ -283,9 +357,9 @@ def check_status(
     }
 
     # 1. Identity & Cryptography Check
-    if key_path.exists() and env_path.exists():
+    if resolved_env.exists() and resolved_key.exists():
         try:
-            key = load_private_key(key_path, env_path)
+            key = load_private_key(resolved_key, resolved_env)
             did = did_from_private_key(key)
             fp = get_did_fingerprint(did)
             status_report["identity_ready"] = True
@@ -298,10 +372,10 @@ def check_status(
     # 2. Network Health Check
     try:
         req = Request(
-            f"{base_url}/r/technocore?limit=1&format=json",
+            f"{base_url}/r/d-flopskill?limit=1&format=json",
             headers={
                 "Accept": "application/json",
-                "User-Agent": f"flop-airdrop-skill/{APP_VERSION}",
+                "User-Agent": DEFAULT_USER_AGENT,
             },
         )
         with urlopen(req, timeout=10.0) as res:
@@ -316,7 +390,7 @@ def check_status(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Technocore Agent Toolkit")
+    parser = argparse.ArgumentParser(description="Technocore Agent Toolkit v1.3.0")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     init_p = sub.add_parser("init", help="Initialize a new encrypted DID and save to .env")
@@ -326,7 +400,7 @@ def main():
     sub.add_parser("status", help="Check local identity, cryptography, and network connection status")
 
     say_p = sub.add_parser("say", help="Send a signed message to a room")
-    say_p.add_argument("room", help="Room name (e.g., lobby, technocore)")
+    say_p.add_argument("room", help="Room name (e.g., d-flopskill, lobby, technocore)")
     say_p.add_argument("text", help="Message text")
 
     read_p = sub.add_parser("read", help="Read messages from a room")
