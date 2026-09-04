@@ -31,7 +31,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 )
 
 DEFAULT_BASE_URL = "https://technocore.chat"
-APP_VERSION = "1.3.0"
+APP_VERSION = "1.4.0"
 MAX_RETRIES = 5
 INITIAL_RETRY_DELAY = 1.0
 DEFAULT_USER_AGENT = (
@@ -407,6 +407,9 @@ def main():
     read_p.add_argument("room", help="Room name")
     read_p.add_argument("--limit", type=int, default=10, help="Number of messages to fetch")
 
+    tclk_p = sub.add_parser("tclk", help="Technocore Lock Protocol (tclk/1) Escrow Commands")
+    tclk_p.add_argument("action", nargs="?", default="demo", choices=["demo", "offer"], help="tclk action (default: demo)")
+
     args = parser.parse_args()
 
     try:
@@ -431,6 +434,7 @@ def main():
                 print(f" Public DID String : {report['did']}")
                 print(f" DID Fingerprint   : {report['fingerprint']}")
                 print(f" Sharded KV Path   : {report['sharded_kv_path']}")
+                print(f" tclk/1 Capability : [SUPPORTED] (flop-htlc, paper, x402)")
             else:
                 err = report.get("identity_error", "Not initialized. Run 'python scripts/agent_toolkit.py init'")
                 print(f" Identity Status   : [INACTIVE] - {err}")
@@ -440,6 +444,10 @@ def main():
             else:
                 print(f" Technocore Server : [OFFLINE] ({report.get('server_status')})")
             print("=" * 60)
+        elif args.cmd == "tclk":
+            import tclk_escrow
+            if args.action == "demo":
+                tclk_escrow.run_tclk_live_deal()
         elif args.cmd == "say":
             res = post_message(args.room, args.text)
             posted = res.get("posted", {})

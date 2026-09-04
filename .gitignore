@@ -20,6 +20,7 @@ assets/
 *.jpg
 *.jpeg
 *.docx
+*receipt*.json
 
 # OS and Editor files
 .DS_Store

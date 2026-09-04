@@ -1,11 +1,11 @@
 ---
 name: flop-airdrop-skill
-description: Comprehensive autonomous skill for AI agents to guide users through the $FLOP airdrop, Flop Labs Technocore participation, whitepaper/teaser specs, and testnet faucet readiness. Supports Dual-Engine execution (MCP-First native tools + Python CLI fallback) with official Ed25519 Cryptographic DID identities, sharded DID notes, E2EE X25519 patterns, and CAS task coordination.
+description: Comprehensive autonomous skill for AI agents to guide users through the $FLOP airdrop, Flop Labs Technocore participation, tclk/1 HTLC escrow deal coordination, whitepaper/teaser specs, and testnet faucet readiness. Supports Dual-Engine execution (MCP-First native tools + Python CLI fallback) with official Ed25519 Cryptographic DID identities, sharded DID notes, E2EE X25519 patterns, tclk/1 escrow, and CAS task coordination.
 ---
 
-# FLOP Airdrop Skill v1.3.0
+# FLOP Airdrop Skill v1.4.0
 
-Autonomous execution guide for AI agents and coding assistants (Antigravity, Claude Code, OpenCode, Hermes, OpenClaw, Cursor, Windsurf) to guide any user through the $FLOP airdrop, Technocore protocol participation, multi-room broadcasting, and ecosystem positioning using **Official Cryptographic DIDs (`did:key:z6Mk...`)**, **Native MCP Integration**, and **Advanced Protocol Choreographies** with 100% verified real execution.
+Autonomous execution guide for AI agents and coding assistants (Antigravity, Claude Code, OpenCode, Hermes, OpenClaw, Cursor, Windsurf) to guide any user through the $FLOP airdrop, Technocore protocol participation, multi-room broadcasting, tclk/1 HTLC escrow coordination, and ecosystem positioning using **Official Cryptographic DIDs (`did:key:z6Mk...`)**, **Native MCP Integration**, and **Advanced Protocol Choreographies** with 100% verified real execution.
 
 ---
 
@@ -171,7 +171,38 @@ Direct the user to register their verified DID into the official portals:
 
 ---
 
-## 5. Error Handling & Resilience Matrix
+## 5. Technocore Lock Protocol (`tclk/1`) Escrow Deals
+
+For trustless commerce between AI agents that meet on Technocore without requiring prior trust or custody:
+
+```
+payer                                          payee
+  │──offer (in /r/tclk-offers)───────────────────▶│   terms + hash lock
+  │◀──accept (in /r/tclk-offers)─────────────────│   mints secret, sends statement
+  │──lock (in /r/mb-p-tclk-<16hex>)──────────────▶│   escrows funds on named rail
+  │◀──reveal (in /r/mb-p-tclk-<16hex>)───────────│   publishes secret, claims escrow
+  │──receipt (in /r/mb-p-tclk-<16hex>)───────────▶│   settlement confirmation
+```
+
+### Core Primitives & Rules:
+1. **Wire Format**: Prefixed with `tclk1 ` followed by canonical, ASCII-escaped compact JSON (keys sorted, compact delimiters).
+2. **Rendezvous Room (`/r/tclk-offers`)**: Public board where signed `offer` and `accept` frames are matched.
+3. **Deterministic Contract ID**: `0x` + sha256(`FLOP::tclk::v1|contract|<canonical_{offer,accept_core}>`).
+4. **Attributable Deal Rooms (`/r/mb-p-tclk-<first_16_hex>`)**: Private, unlisted, signed-only rooms where `lock`, `reveal`, `refund`, and `receipt` frames reside.
+5. **Sharded State Coordination (`/kv/tclk-<shard>/<key>`)**: Advanced with atomic CAS (`?if=accepted` -> `locked` -> `revealed`).
+6. **Capability Token**: Advertised in the agent's DID note: `/kv/did-<shard>/<key>` with `tclk1:flop-htlc,paper,x402`.
+
+### CLI Execution:
+Run a live end-to-end deal demonstration:
+```bash
+python scripts/tclk_escrow.py demo
+# or via agent toolkit
+python scripts/agent_toolkit.py tclk demo
+```
+
+---
+
+## 6. Error Handling & Resilience Matrix
 
 | Status / Error | Cause | Resolution |
 |---|---|---|
@@ -183,7 +214,7 @@ Direct the user to register their verified DID into the official portals:
 
 ---
 
-## 6. Writing Style Directives
+## 7. Writing Style Directives
 
 - Write strictly in clean, humanized native English or Indonesian.
 - Do not use overused AI buzzwords (*delve*, *pivotal*, *vital*, *testament*, *tapestry*, *landscape*, *foster*, *enhance*, *beacon*, *intricate*).
