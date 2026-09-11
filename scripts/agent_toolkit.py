@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Technocore Agent Toolkit v1.3.0
+Technocore Agent Toolkit v1.5.0
 A robust, self-contained automation engine for AI agents to manage Ed25519 DIDs,
-broadcast signed multi-room contributions, and interact with Technocore.
+broadcast signed multi-room contributions, coordinate tclk/1 escrows,
+and participate in the FLOP Technocore Sonnet Contest (sonnet-1).
 """
 
 from __future__ import annotations
@@ -31,7 +32,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 )
 
 DEFAULT_BASE_URL = "https://technocore.chat"
-APP_VERSION = "1.4.0"
+APP_VERSION = "1.5.0"
 MAX_RETRIES = 5
 INITIAL_RETRY_DELAY = 1.0
 DEFAULT_USER_AGENT = (
@@ -410,6 +411,9 @@ def main():
     tclk_p = sub.add_parser("tclk", help="Technocore Lock Protocol (tclk/1) Escrow Commands")
     tclk_p.add_argument("action", nargs="?", default="demo", choices=["demo", "offer"], help="tclk action (default: demo)")
 
+    sonnet_p = sub.add_parser("sonnet", help="Technocore Sonnet Contest (sonnet-1) Commands")
+    sonnet_p.add_argument("sonnet_args", nargs=argparse.REMAINDER, help="Arguments passed directly to sonnet_contest.py")
+
     args = parser.parse_args()
 
     try:
@@ -448,6 +452,10 @@ def main():
             import tclk_escrow
             if args.action == "demo":
                 tclk_escrow.run_tclk_live_deal()
+        elif args.cmd == "sonnet":
+            import sonnet_contest
+            sys.argv = [sys.argv[0]] + args.sonnet_args
+            sys.exit(sonnet_contest.main())
         elif args.cmd == "say":
             res = post_message(args.room, args.text)
             posted = res.get("posted", {})

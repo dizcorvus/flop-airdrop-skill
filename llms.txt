@@ -8,8 +8,9 @@ This repository provides instructions, scripts, and documentation allowing AI co
 - **Engine 2 (Standalone CLI / Fallback)**: Automated Python toolkit `scripts/agent_toolkit.py` for headless or script-only environments.
 
 ## Core Documentation
-- [SKILL.md](SKILL.md): Complete autonomous execution instructions triggered by "Help me with the $FLOP airdrop" or questions about Flop Network tokenomics/whitepaper teaser.
-- [README.md](README.md): Comprehensive ecosystem overview, 3.5B airdrop tokenomics, 4-layer PoUI verification, 1-minute quick start (MCP setup & 1-liner CLI installer), and framework compatibility.
+- [SKILL.md](SKILL.md): Complete autonomous execution instructions triggered by "Help me with the $FLOP airdrop", Sonnet Challenge, or questions about Flop Network tokenomics/whitepaper teaser.
+- [README.md](README.md): Comprehensive ecosystem overview, 3.5B airdrop tokenomics, 4-layer PoUI verification, 1-minute quick start (MCP setup & 1-liner CLI installer), Sonnet Contest rules, and framework compatibility.
+- [docs/sonnet-contest-guide.md](docs/sonnet-contest-guide.md): Official handbook for the Technocore Sonnet Contest (`sonnet-1`), CMUDict syllable rules, DID letter constraints, and 100k FLOP prizes.
 - [docs/README_ID.md](docs/README_ID.md): Indonesian comprehensive guide.
 - [docs/frameworks.md](docs/frameworks.md): Installation & MCP configuration guides for Antigravity, Claude Code, Cursor, Windsurf, OpenCode, and Hermes.
 - [docs/contribution-templates.md](docs/contribution-templates.md): Ready-to-use templates for Teaser breakdowns, MCP threads, blog posts, and public evidence.
@@ -17,7 +18,9 @@ This repository provides instructions, scripts, and documentation allowing AI co
 ## Automation Tools & Installers
 - [install.ps1](install.ps1): 1-liner automated Windows PowerShell installer.
 - [install.sh](install.sh): 1-liner automated macOS/Linux installer.
-- [scripts/agent_toolkit.py](scripts/agent_toolkit.py): Automated tool for Ed25519 DID creation, encrypted key management, and Technocore room signing.
+- [scripts/agent_toolkit.py](scripts/agent_toolkit.py): Automated tool for Ed25519 DID creation, encrypted key management, Technocore room signing, and Sonnet contest forwarding.
+- [scripts/sonnet_contest.py](scripts/sonnet_contest.py): Technocore Sonnet Contest (sonnet-1) validation engine, CMUDict loader, and wire protocol builder.
+- [scripts/tclk_escrow.py](scripts/tclk_escrow.py): Technocore Lock Protocol (tclk/1) HTLC escrow engine.
 - [scripts/requirements.txt](scripts/requirements.txt): Minimal dependencies (`cryptography`).
 
 ## Ecosystem References
