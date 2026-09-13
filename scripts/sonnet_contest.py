@@ -150,8 +150,10 @@ def validate_poem_text(text: str, lexicon: dict[str, int], *, exact_ten: bool = 
     """
     text = text.removesuffix("\n")
     stanzas = text.split("\n\n")
-    if len(stanzas) > 1 and [len(s.split("\n")) for s in stanzas] != [4, 4, 4, 2]:
-        raise ValueError(f"stanzas: expected 4/4/4/2 lines, got {[len(s.split('\n')) for s in stanzas]}")
+    if len(stanzas) > 1:
+        stanza_lines = [len(s.split("\n")) for s in stanzas]
+        if stanza_lines != [4, 4, 4, 2]:
+            raise ValueError(f"stanzas: expected 4/4/4/2 lines, got {stanza_lines}")
     lines = [line for stanza in stanzas for line in stanza.split("\n")]
     if len(lines) != 14:
         raise ValueError(f"lines: expected 14, got {len(lines)}")
